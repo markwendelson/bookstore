@@ -1,19 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>BookStore - Book Selling Online Application</title>
-  {{ style('style') }}
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="shopper/images/favicon.ico">
+	<link rel="apple-touch-icon" href="shopper/images/icon.png">
+
+	<!-- Google font (font-family: 'Roboto', sans-serif; Poppins ; Satisfy) -->
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,600,600i,700,700i,800" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="shopper/css/bootstrap.min.css">
+	<link rel="stylesheet" href="shopper/css/plugins.css">
+	<link rel="stylesheet" href="shopper/style.css">
+
+	<!-- Cusom css -->
+   <link rel="stylesheet" href="shopper/css/custom.css">
+
+	<!-- Modernizer js -->
+	<script src="shopper/js/vendor/modernizr-3.5.0.min.js"></script>
 </head>
 <body>
-  <section>
-    @include('includes.header')
-  </section>
-  @section('content')
-    
-  @endsection
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <div class="wrapper" id="wrapper">
+    <section>
+      @include('includes.header')
+    </section>
+    @section('content')
+    @endsection
+    <section>
+      @include('includes.footer')
+    </section>
+  </div>
+  <script src="shopper/js/vendor/jquery-3.2.1.min.js"></script>
+	<script src="shopper/js/popper.min.js"></script>
+	<script src="shopper/js/bootstrap.min.js"></script>
+	<script src="shopper/js/plugins.js"></script>
+	<script src="shopper/js/active.js"></script>
 </body>
 </html>

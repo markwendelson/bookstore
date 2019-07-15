@@ -17,6 +17,12 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index')
+Route.get('/login', 'PageController.login').as('auth.login')
+Route.get('/register', 'PageController.register').as('auth.register')
+Route.get('/forgot-password', 'PageController.forgotPassword').as('auth.forgotpassword')
+Route.get('/change-password', 'UserController.changePassword').as('auth.changepassword')
+Route.get('/account', 'UserController.userAccount').as('user.account')
+Route.get('/cart', 'UserController.userCart').as('user.cart')
 
 Route.group(()=> {
     Route.post('login', 'UserController.login').middleware('guest')

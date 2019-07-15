@@ -189,6 +189,18 @@ class UserController {
         
         return response.status(200).json(user)
     }
+    
+    async userCart ({ view }) {
+        return view.render('pages.cart')
+    }
+
+    async userAccount ({ view }) {
+        return view.render('pages.user.account')
+    }
+
+    async changePassword ({ view }) {
+        return view.render('auth.change-password')
+    }
 
 }
 
