@@ -1,0 +1,37 @@
+@layout('master')
+@section('content')
+<section class="my_account_area pt--100 bg--white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-12">
+                <div class="my__account__wrapper">
+                    <h3 class="account__title">My Account</h3>
+                    <form action="#">
+                        <div class="account__form">
+                            <div class="input__box">
+                                <label>Firstname <span>*</span></label>
+                                <input type="text" name="firstname">
+                            </div>
+                            <div class="input__box">
+                                <label>Middlename <span>*</span></label>
+                                <input type="text" name="middlename">
+                            </div>
+                            <div class="input__box">
+                                <label>Lastname <span>*</span></label>
+                                <input type="text" name="lastname">
+                            </div>
+                            <div class="input__box">
+                                <label>Email address <span>*</span></label>
+                                <input type="email" name="email">
+                            </div>
+                            <div class="form__btn">
+                                <button>Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
