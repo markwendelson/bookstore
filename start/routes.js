@@ -17,17 +17,21 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index')
-Route.get('/login', 'PageController.login').as('auth.login')
-Route.get('/register', 'PageController.register').as('auth.register')
-Route.get('/forgot-password', 'PageController.forgotPassword').as('auth.forgotpassword')
-Route.get('/change-password', 'UserController.changePassword').as('auth.changepassword')
-Route.get('/account', 'UserController.userAccount').as('user.account')
-Route.get('/cart', 'UserController.userCart').as('user.cart')
 
 Route.group(()=> {
-    Route.post('login', 'UserController.login').middleware('guest')
-    Route.post('logout', 'UserController.logout').middleware('auth')
-    Route.post('register', 'UserController.register').middleware('guest')
+    Route.get('/login', 'AuthController.login').as('auth.login')
+    Route.get('/register', 'AuthController.register').as('auth.register')
+    Route.get('/forgot-password', 'AuthController.forgotPassword').as('auth.forgotpassword')
+    Route.get('/change-password', 'AuthController.changePassword').as('auth.changepassword')
+    Route.get('/account', 'UserController.userAccount').as('user.account')
+    Route.get('/cart', 'UserController.userCart').as('user.cart')
+    Route.get('/orders', 'UserController.userOrder').as('user.order')
+    Route.post('login', 'AuthController.login').middleware('guest')
+    Route.post('logout', 'AuthController.logout').middleware('auth')
+    Route.post('register', 'AuthController.register').middleware('guest')
+}).prefix('account')
+
+Route.group(()=> {
     Route.get('list', 'UserController.index')
 }).prefix('users')
 
@@ -62,12 +66,12 @@ Route.group(()=> {
 
 // cart 
 Route.group(()=> {
-    Route.get('list', 'OrderController.index')
-    Route.get(':id', 'OrderController.show')
-    Route.delete(':id', 'OrderController.destroy')
-    Route.post('store', 'OrderController.store')
-    Route.put(':id', 'OrderController.update')
-}).prefix('order')
+    Route.get('list', 'CartController.index')
+    Route.get(':id', 'CartController.show')
+    Route.delete(':id', 'CartController.destroy')
+    Route.post('store', 'CartController.store')
+    Route.put(':id', 'CartController.update')
+}).prefix('cart')
 
 // management
 Route.group(()=> {

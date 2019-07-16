@@ -10,18 +10,6 @@ class PageController {
         
         return view.render('pages.index', { categories })
     }
-
-    async login ({ view }) {
-        return view.render('auth.login')
-    }
-
-    async register ({ view }) {
-        return view.render('auth.register')
-    }
-
-    async forgotPassword ({ view }) {
-        return view.render('auth.forgotpassword')
-    }
 }
 
 module.exports = PageController

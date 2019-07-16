@@ -1,35 +1,34 @@
 'use strict'
 
 const { validate } = use('Validator')
-const Orders = use('App/Models/Order')
-const Books = use('App/Models/Book')
+const Cart = use('App/Models/Cart')
 
-class OrderController {
+class CartController {
     async index({ response }){
-        const order = await Orders.all()
+        const cart = await Cart.all()
 
         return response.json({
-            message: order.count ? "order found" : "no order found",
+            message: cart.count ? "cart found" : "no cart found",
             status: 200,
-            data: order
+            data: cart
         });
     }
     
     async show ({ params, response }) {
-        const order = await Orders.find(params.id)
+        const cart = await Cart.find(params.id)
         
-        if (!order) {
+        if (!cart) {
             return response.json({
-                message: "order not found",
+                message: "cart not found",
                 status: 404,
                 data: null
               });
         }
 
         return response.json({
-            message: "order found",
+            message: "cart found",
             status: 200,
-            data: order
+            data: cart
         });
     }
 
@@ -37,7 +36,6 @@ class OrderController {
         const rules = {
             book_id: 'required',
             user_id: 'required',
-            price: 'required',
             quantity: 'required'
         }
 
@@ -54,48 +52,45 @@ class OrderController {
             });
         }
 
-        const { book_id, user_id, price, quantity } = request.only([
+        const { book_id, user_id, quantity } = request.only([
             'book_id',
             'user_id',
-            'price',
             'quantity'
         ])
 
-        const order = await Orders.create({ 
+        const cart = await Cart.create({ 
             book_id, 
             user_id, 
-            price,
             quantity
         })
 
         return response.json({
-            message: "order added",
+            message: "cart added",
             status: 201,
-            data: order
+            data: cart
         });
     }
 
     async destroy ({ params, request, response }) {
-        const order = await Orders.find(params.id)
+        const cart = await Cart.find(params.id)
         
-        await order.delete()
+        await cart.delete()
 
         return response.json({
-            message: "order deleted",
+            message: "cart deleted",
             status: 204,
             data: null
         });
     }
 
     async update ({ params, request, response }) {
-        const order = await Orders.find(params.id)
+        const cart = await Cart.find(params.id)
        
-        if (!order) {
+        if (!cart) {
             return response.status(404).json(null)
         }
 
         const rules = {
-            price: 'required',
             quantity: 'required'
         }
 
@@ -112,20 +107,19 @@ class OrderController {
             });
         }
 
-        const orderInfo = request.only(['price','quantity'])
+        const cartInfo = request.only(['quantity'])
 
-        order.price = orderInfo.price
-        order.quantity = orderInfo.quantity
+        cart.quantity = cartInfo.quantity
        
-        await order.save()
+        await cart.save()
 
         return response.json({
-            message: "order updated",
+            message: "cart updated",
             status: 200,
-            data: order
+            data: cart
         });
     
     }
 }
 
-module.exports = OrderController
+module.exports = CartController
