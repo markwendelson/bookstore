@@ -4,20 +4,55 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-12">
-                <div class="my__account__wrapper">
+                <div class="my__account__wrapper" id="register">
                     <h3 class="account__title">Register</h3>
-                    <form action="#">
+                    <form id="register-form" method="POST" action="{{ route('auth.register')}}">
+                        {{ csrfField() }}
                         <div class="account__form">
                             <div class="input__box">
+                                <label>Firstname <span>*</span></label>
+                                <input type="text" name="firstname" class="form-control" :class="{'is-invalid': errors.has('firstname')}" v-validate="'required'" placeholder="Firstname">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('firstname') }}
+                                </small>
+                            </div>
+                            <div class="input__box">
+                                <label>Middlename <span>*</span></label>
+                                <input type="text" name="middlename" class="form-control" :class="{'is-invalid': errors.has('middlename')}" v-validate="'required'" placeholder="Middle name">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('middlename') }}
+                                </small>
+                            </div>
+                            <div class="input__box">
+                                <label>Lastname <span>*</span></label>
+                                <input type="text" name="lastname" class="form-control" :class="{'is-invalid': errors.has('lastname')}" v-validate="'required'" placeholder="Lastname">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('lastname') }}
+                                </small>
+                            </div>
+                            <div class="input__box">
                                 <label>Email address <span>*</span></label>
-                                <input type="email">
+                                <input type="email" name="email" class="form-control" :class="{'is-invalid': errors.has('email')}" v-validate="'required|email'" placeholder="Email address">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('email') }}
+                                </small>
                             </div>
                             <div class="input__box">
                                 <label>Password<span>*</span></label>
-                                <input type="password">
+                                <input type="password" name="password" v-model="password" class="form-control" :class="{'is-invalid': errors.has('password')}" v-validate="'required'" placeholder="Password">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('password') }}
+                                </small>
+                            </div>
+                            <div class="input__box">
+                                <label>Confirm Password<span>*</span></label>
+                                <input type="password" name="confirm_password" class="form-control" :class="{'is-invalid': errors.has('confirm_password')}" v-validate="'required|confirmed:password|regex: /^\S*$/'" placeholder="Confirm Password">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('confirm_password') }}
+                                </small>
                             </div>
                             <div class="form__btn">
-                                <button>Register</button>
+                                <button type="submit">Register</button>
                             </div>
                         </div>
                     </form>
@@ -26,4 +61,47 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('extra_scripts')
+<script type="text/javascript">
+    const error_msg = {
+        custom: {
+            confirm_password: {
+                required: 'The confirm password field is required.',
+                confirmed: 'The password entered does not match the one above.',
+                regex: 'Password does not allow spaces and whitespace',
+            }
+        }
+    }
+
+    Validator.localize('en', error_msg)
+
+    new Vue({
+        el: '#register',
+            data () {
+                return {
+                    firstname: '',
+                    middlename: '',
+                    lastname: '',
+                    email: '',
+                    password: ''
+                }
+            },
+            mounted () {
+                document.getElementById('register-form')
+                    .addEventListener('submit', this.onSubmit)
+            },
+            methods: {
+                onSubmit (e) {
+                    this.$validator.validate()
+                        .then((valid) => {
+                            if (!valid) {
+                                e.preventDefault()
+                            }
+                        })
+                }
+            }
+    })
+</script>
 @endsection
