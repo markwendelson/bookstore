@@ -75,7 +75,11 @@ class UserController {
     }
     
     async userCart ({ view }) {
-        return view.render('pages.cart')
+        return view.render('pages.user.cart')
+    }
+
+    async userOrders ({ view }) {
+        return view.render('pages.user.orders')
     }
 
     async userAccount ({ view }) {
