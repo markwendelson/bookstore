@@ -16,7 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/', 'PageController.index')
+Route.get('/', 'PageController.index').as('page.index')
 
 Route.group(()=> {
     Route.get('/login', 'AuthController.showLogin').as('auth.login')
@@ -27,8 +27,8 @@ Route.group(()=> {
     Route.get('/cart', 'UserController.userCart').as('user.cart')
     Route.get('/orders', 'UserController.userOrders').as('user.order')
     Route.post('login', 'AuthController.login').middleware('guest')
-    Route.post('logout', 'AuthController.logout').middleware('auth')
-    Route.post('register', 'AuthController.register').middleware('guest')
+    Route.post('logout', 'AuthController.logout').as('auth.logout').middleware('auth')
+    Route.post('register', 'AuthController.register').as('auth.register').middleware('guest')
 }).prefix('account')
 
 Route.group(()=> {

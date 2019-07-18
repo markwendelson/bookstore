@@ -104,6 +104,10 @@
                                                 @loggedIn
                                                     <span><a href="#">My Account</a></span>
                                                     <span><a href="{{ route('auth.changepassword') }}">Change Password</a></span>
+                                                    <span><a href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
+                                                    <form id="logout-form" action="{{ route('auth.logout') }}" method="post" style="display: none;">
+                                                        {{ csrfField() }}
+                                                    </form>
                                                     @else
                                                     <span><a href="{{ route('auth.login') }}">Sign In</a></span>
                                                     <span><a href="{{ route('auth.register') }}">Register</a></span>

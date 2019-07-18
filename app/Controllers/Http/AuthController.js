@@ -4,29 +4,37 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 
 class AuthController {
-    async showLogin ({ view }) {
-        return view.render('auth.login')
+    async showLogin ({ auth, response, view }) {
+        try {
+            await auth.check()
+            return response.route('page.index')
+        } catch (error) {
+            return view.render('auth.login')
+        }
     }
 
     async showRegister ({ view }) {
-        return view.render('auth.register')
+        try {
+            await auth.check()
+            return response.route('page.index')
+        } catch (error) {
+            return view.render('auth.register')
+        }
     }
 
     async forgotPassword ({ view }) {
-        return view.render('auth.forgotpassword')
+        try {
+            await auth.check()
+            return response.route('page.index')
+        } catch (error) {
+            return view.render('auth.forgotpassword')
+        }
     }
 
-    async login ({ auth, request }) {
-        const { email, password } = request.all()
-        await auth.attempt(email, password)
-    
-        return 'Logged in successfully'
-    }
-
-    async logout ({ auth }) {
+    async logout ({ auth, response }) {
         await auth.logout()
 
-        return 'Logged out successfully'
+        return response.route('page.index')
     }
 
     async register ({ request, session, response }) {
@@ -95,11 +103,12 @@ class AuthController {
 
         const user = await auth.attempt(email, password)
 
-        return response.json({
-            message: "login success",
-            status: 200,
-            data: user
-        });
+        // return response.json({
+        //     message: "login success",
+        //     status: 200,
+        //     data: user
+        // });
+        return response.route('page.index')
     }
 
     async changePassword ({ params, request, response }) {

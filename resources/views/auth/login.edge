@@ -4,17 +4,24 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-12">
-                <div class="my__account__wrapper">
+                <div class="my__account__wrapper" id="login">
                     <h3 class="account__title">Login</h3>
-                    <form action="#">
+                    <form id="login-form" method="POST" action="{{ route('auth.login') }}">
+                        {{ csrfField() }}
                         <div class="account__form">
                             <div class="input__box">
                                 <label>Email address <span>*</span></label>
-                                <input type="text">
+                                <input type="email" name="email" class="form-control" :class="{'is-invalid': errors.has('email')}" v-validate="'required|email'" placeholder="Email address">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('email') }}
+                                </small>
                             </div>
                             <div class="input__box">
                                 <label>Password<span>*</span></label>
-                                <input type="text">
+                                <input type="password" name="password" v-model="password" class="form-control" :class="{'is-invalid': errors.has('password')}" v-validate="'required'" placeholder="Password">
+                                <small class="text-danger" v-cloak>
+                                    @{{ errors.first('password') }}
+                                </small>
                             </div>
                             <div class="form__btn">
                                 <button>Login</button>
@@ -31,4 +38,38 @@
         </div>
     </div>
 </section>
+@endsection
+@section('extra_scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#login',
+            data () {
+                return {
+                    email: '',
+                    password: ''
+                }
+            },
+            mounted () {
+                document.getElementById('login-form')
+                    .addEventListener('submit', this.onSubmit)
+
+                    // Swal.fire(
+                    //     'Updated!',
+                    //     'Information has been updated.',
+                    //     'success'
+                    //     )
+            },
+            methods: {
+                onSubmit (e) {
+                    this.$validator.validate()
+                        .then((valid) => {
+                            if (!valid) {
+                                e.preventDefault()
+                            }
+                        })
+                }
+            }
+    })
+</script>
 @endsection
