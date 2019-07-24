@@ -22,4 +22,8 @@ hooks.after.providersBooted(async () => {
 
         return mixManifest[filename]
     })
+
+    View.global('range', (start, size) => {
+        return [...Array(size).keys()].map(i => i + start)
+      })
 })

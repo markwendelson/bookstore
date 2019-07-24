@@ -5,9 +5,11 @@ const Category = use('App/Models/Category')
 const Books = use('App/Models/Book')
 
 class PageController {
-   async index ({ view }) {
+    async index ({ view, request }) {
+        const currentPage = request.get().page || 1
+        const perPage = 2
         let categories = await Category.all()
-        let books = await Books.all()
+        let books = await Books.query().paginate(currentPage,perPage)
         books = books.toJSON()
         categories = categories.toJSON()
         
