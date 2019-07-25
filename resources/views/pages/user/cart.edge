@@ -14,25 +14,23 @@
                                     <th class="product-price">Price</th>
                                     <th class="product-quantity">Quantity</th>
                                     <th class="product-subtotal">Total</th>
-                                    <th class="product-remove">Remove</th>
+                                <th class="product-remove">Remove</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{--  @if(!cart.length)
+                                @if(!cart.length)
                                     <tr>
                                         <td class="product-name" colspan="6"><strong>Cart is empty</strong></td>
                                     </tr>
-                                @endif  --}}
-                                {{--  @each(item in _cart)
-                                <tr>
+                                @endif
+                                <tr v-for="item in myCart">
                                     <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
-                                    <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
-                                    <td class="product-price"><span class="amount">{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span></td>
-                                    <td class="product-quantity"><input type="number" value="{{ item.quantity}}"></td>
-                                    <td class="product-subtotal">{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
-                                    <td class="product-remove"><a href="#" v-on:click="removeItem()">X</a></td>
+                                    <td class="product-name"><a href="#">@{{ item.book.book_name }}</a></td>
+                                    <td class="product-price"><span class="amount">@{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span></td>
+                                    <td class="product-quantity"><input type="number" v-model="item.quantity"></td>
+                                    <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
+                                    <td class="product-remove"><a href="#" v-on:click="removeItem(item)">X</a></td>
                                 </tr>
-                                @endeach  --}}
                             </tbody>
                         </table>
                     </div>
@@ -64,10 +62,11 @@
         el: '#cart',
             data () {
                 return {
-                    _cart: {{ cart }},
+                    myCart: [],
                 }
             },
             mounted () {
+                this.getCart()
                     // Swal.fire(
                     //     'Updated!',
                     //     'Information has been updated.',
@@ -76,7 +75,14 @@
             },
             methods: {
                 getCart() {
-                    // this._cart = @JSON('cart')
+                    var app = this
+                    axios.get('/account/checkout')
+                    .then(function (response) {
+                        app.myCart = response.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
                 },
                 updateCart() {
                     Swal.fire(
@@ -85,7 +91,10 @@
                         'success'
                         )
                 },
-                removeItem() {
+                removeItem(item) {
+                    var app = this
+                    console.log(item)
+                    app.myCart.$remove(item);
                     Swal.fire(
                         'Deleted!',
                         'Book deleted.',

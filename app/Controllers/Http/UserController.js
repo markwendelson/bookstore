@@ -79,9 +79,9 @@ class UserController {
     
     async userCart ({ view, auth }) {
         let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
-        let _cart = cart.toJSON()
+        cart = cart.toJSON()
         
-        let total = _cart.reduce(function (sum, crt) {
+        let total = cart.reduce(function (sum, crt) {
             return sum + (crt.quantity * (crt.book.price - (crt.book.price * (crt.book.discount/100)))) ;
         }, 0);
 
@@ -106,6 +106,11 @@ class UserController {
 
     async userAccount ({ view }) {
         return view.render('pages.user.account')
+    }
+
+    async userGetCheckout ({ auth, response }) {
+        let orders = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        return response.json(orders)
     }
 
 }
