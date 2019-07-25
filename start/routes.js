@@ -26,7 +26,7 @@ Route.group(()=> {
     Route.get('/account', 'UserController.userAccount').as('user.account')
     Route.get('/cart', 'UserController.userCart').as('user.cart')
     Route.get('/cart', 'UserController.userCart').as('user.cart')
-    Route.get('/checkout', 'UserController.userCheckout').as('user.checkout')
+    Route.post('/checkout', 'UserController.userCheckout').as('user.checkout')
     Route.post('login', 'AuthController.login').middleware('guest')
     Route.post('logout', 'AuthController.logout').as('auth.logout').middleware('auth')
     Route.post('register', 'AuthController.register').as('auth.register').middleware('guest')

@@ -1,11 +1,10 @@
 @layout('master')
 @section('content')
 <section class="cart-main-area section-padding--lg mt-5 bg--white">
-    <div class="container">
+    <div class="container" id="cart">
         <div class="row">
             <div class="col-md-12 col-sm-12 ol-lg-12">
                 <h3 class="account__title">My Cart</h3>
-                <form action="#">               
                     <div class="table-content wnro__table table-responsive">
                         <table>
                             <thead>
@@ -19,29 +18,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(!cart.length)
+                                {{--  @if(!cart.length)
                                     <tr>
                                         <td class="product-name" colspan="6"><strong>Cart is empty</strong></td>
                                     </tr>
-                                @endif
-                                @each(item in cart)
+                                @endif  --}}
+                                {{--  @each(item in _cart)
                                 <tr>
                                     <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
                                     <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
                                     <td class="product-price"><span class="amount">{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span></td>
                                     <td class="product-quantity"><input type="number" value="{{ item.quantity}}"></td>
                                     <td class="product-subtotal">{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
-                                    <td class="product-remove"><a href="#">X</a></td>
+                                    <td class="product-remove"><a href="#" v-on:click="removeItem()">X</a></td>
                                 </tr>
-                                @endeach
+                                @endeach  --}}
                             </tbody>
                         </table>
                     </div>
-                </form> 
                 <div class="cartbox__btn">
                     <ul class="cart__btn__list d-flex flex-wrap flex-md-nowrap flex-lg-nowrap">
-                        <li><a href="#">Update Cart</a></li>
-                        <li class="ml-5"><a href="#">Check Out</a></li>
+                        <li><a href="#" v-on:click="updateCart()">Update Cart</a></li>
+                        <li class="ml-5"><a href="#" v-on:click="submitCart()" class="btn btn-submit">Check Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -58,4 +56,43 @@
         </div>
     </div>  
 </section>
+@endsection
+@section('extra_scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#cart',
+            data () {
+                return {
+                    _cart: {{ cart }},
+                }
+            },
+            mounted () {
+                    // Swal.fire(
+                    //     'Updated!',
+                    //     'Information has been updated.',
+                    //     'success'
+                    //     )
+            },
+            methods: {
+                getCart() {
+                    // this._cart = @JSON('cart')
+                },
+                updateCart() {
+                    Swal.fire(
+                        'Updated!',
+                        'Information has been updated.',
+                        'success'
+                        )
+                },
+                removeItem() {
+                    Swal.fire(
+                        'Deleted!',
+                        'Book deleted.',
+                        'success'
+                        )
+                }
+            }
+    })
+</script>
 @endsection

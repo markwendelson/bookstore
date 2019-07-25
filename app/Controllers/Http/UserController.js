@@ -4,6 +4,7 @@ const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Cart = use('App/Models/Cart')
 const Orders = use('App/Models/Order')
+var randomstring = require("randomstring")
 
 class UserController {
     async show ({ params, response }) {
@@ -78,9 +79,9 @@ class UserController {
     
     async userCart ({ view, auth }) {
         let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
-        cart = cart.toJSON()
+        let _cart = cart.toJSON()
         
-        let total = cart.reduce(function (sum, crt) {
+        let total = _cart.reduce(function (sum, crt) {
             return sum + (crt.quantity * (crt.book.price - (crt.book.price * (crt.book.discount/100)))) ;
         }, 0);
 
@@ -97,8 +98,10 @@ class UserController {
         return view.render('pages.user.orders', { orders, total })
     }
 
-    async userCheckout ({ view }) {
-        return view.render('pages.user.checkout')
+    async userCheckout ({ request, view, auth }) {
+        let orders = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        const order_number = randomstring.generate(10);
+        return view.render('pages.user.checkout', { orders, order_number })
     }
 
     async userAccount ({ view }) {

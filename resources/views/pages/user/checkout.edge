@@ -2,32 +2,19 @@
 @section('content')
   
 <div class="col-lg-6 col-12 md-mt-40 sm-mt-40 pt--100">
-    <div class="wn__order__box">
+    <div class="wn__order__box w-100">
         <h3 class="onder__title">Your order</h3>
+        <ul class="order__total onder__title">
+            <li>Order No.</li>
+            <li>{{ order_number }}</li>
+        </ul>
+        <h3 class="onder__title"></h3>
         <ul class="order__total">
             <li>Product</li>
             <li>Total</li>
         </ul>
         <ul class="order_product">
             <li>Buscipit at magna × 1<span>$48.00</span></li>
-            <li>Buscipit at magna × 1<span>$48.00</span></li>
-            <li>Buscipit at magna × 1<span>$48.00</span></li>
-            <li>Buscipit at magna × 1<span>$48.00</span></li>
-        </ul>
-        <ul class="shipping__method">
-            <li>Cart Subtotal <span>$48.00</span></li>
-            <li>Shipping 
-                <ul>
-                    <li>
-                        <input name="shipping_method[0]" data-index="0" value="legacy_flat_rate" checked="checked" type="radio">
-                        <label>Flat Rate: $48.00</label>
-                    </li>
-                    <li>
-                        <input name="shipping_method[0]" data-index="0" value="legacy_flat_rate" checked="checked" type="radio">
-                        <label>Flat Rate: $48.00</label>
-                    </li>
-                </ul>
-            </li>
         </ul>
         <ul class="total__amount">
             <li>Order Total <span>$223.00</span></li>
