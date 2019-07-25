@@ -4,6 +4,13 @@
 const Model = use('Model')
 
 class Cart extends Model {
+    book () {
+        return this.hasOne('App/Models/Book', 'book_id', 'id')
+    }
+
+    users () {
+        return this.belongsToMany('App/Models/User')
+    }
 }
 
 module.exports = Cart

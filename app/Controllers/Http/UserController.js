@@ -2,6 +2,8 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
+const Cart = use('App/Models/Cart')
+const Books = use('App/Models/Book')
 
 class UserController {
     async show ({ params, response }) {
@@ -74,8 +76,15 @@ class UserController {
         return response.status(200).json(user)
     }
     
-    async userCart ({ view }) {
-        return view.render('pages.user.cart')
+    async userCart ({ view, auth }) {
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+        
+        let total = cart.reduce(function (sum, crt) {
+            return sum + (crt.quantity * (crt.book.price - (crt.book.price * (crt.book.discount/100)))) ;
+        }, 0);
+
+        return view.render('pages.user.cart', { cart, total })
     }
 
     async userOrders ({ view }) {
