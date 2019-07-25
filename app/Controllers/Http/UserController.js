@@ -3,7 +3,7 @@
 const { validate } = use('Validator')
 const User = use('App/Models/User')
 const Cart = use('App/Models/Cart')
-const Books = use('App/Models/Book')
+const Orders = use('App/Models/Order')
 
 class UserController {
     async show ({ params, response }) {
@@ -87,8 +87,18 @@ class UserController {
         return view.render('pages.user.cart', { cart, total })
     }
 
-    async userOrders ({ view }) {
-        return view.render('pages.user.orders')
+    async userOrders ({ view, auth }) {
+        let orders = await Orders.query().with('book').where('user_id',auth.user.id).fetch()
+        orders = orders.toJSON()
+        
+        let total = orders.reduce(function (sum, ord) {
+            return sum + (ord.quantity * ord.price) ;
+        }, 0);
+        return view.render('pages.user.orders', { orders, total })
+    }
+
+    async userCheckout ({ view }) {
+        return view.render('pages.user.checkout')
     }
 
     async userAccount ({ view }) {

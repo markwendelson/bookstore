@@ -15,6 +15,10 @@ class Book extends Model {
     cart () {
         return this.hasOne('App/Models/Cart', 'id', 'book_id')
     }
+
+    order () {
+        return this.hasOne('App/Models/Order', 'id', 'book_id')
+    }
 }
 
 module.exports = Book

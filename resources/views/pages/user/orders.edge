@@ -4,43 +4,36 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12 ol-lg-12">
-                <h3 class="account__title">My Orders</h3>
-                    <div class="table-content wnro__table table-responsive">
-                        <table>
-                            <thead>
-                                <tr class="title-top">
-                                    <th class="product-thumbnail">Image</th>
-                                    <th class="product-name">Product</th>
-                                    <th class="product-price">Price</th>
-                                    <th class="product-quantity">Quantity</th>
-                                    <th class="product-subtotal">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <h3 class="account__title">My Order</h3>
+                <div class="table-content wnro__table table-responsive">
+                    <table>
+                        <thead>
+                            <tr class="title-top">
+                                <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!orders.length)
                                 <tr>
-                                    <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
-                                    <td class="product-name"><a href="#">Natoque penatibus</a></td>
-                                    <td class="product-price"><span class="amount">$165.00</span></td>
-                                    <td class="product-quantity"><span class="amount">1</span></td>
-                                    <td class="product-subtotal">$165.00</td>
+                                    <td class="product-name" colspan="6"><strong>Order is empty</strong></td>
                                 </tr>
-                                <tr>
-                                    <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/2.jpg" alt="product img"></a></td>
-                                    <td class="product-name"><a href="#">Quisque fringilla</a></td>
-                                    <td class="product-price"><span class="amount">$50.00</span></td>
-                                    <td class="product-quantity"><span class="amount">1</span></td>
-                                    <td class="product-subtotal">$50.00</td>
-                                </tr>
-                                <tr>
-                                    <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/3.jpg" alt="product img"></a></td>
-                                    <td class="product-name"><a href="#">Vestibulum suscipit</a></td>
-                                    <td class="product-price"><span class="amount">$50.00</span></td>
-                                    <td class="product-quantity"><span class="amount">1</span></td>
-                                    <td class="product-subtotal">$50.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            @endif
+                            @each(item in orders)
+                            <tr>
+                                <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
+                                <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
+                                <td class="product-price"><span class="amount">{{ item.price }}</span></td>
+                                <td class="product-quantity">{{ item.quantity}}</td>
+                                <td class="product-subtotal">{{ item.quantity * item.price }}</td>
+                            </tr>
+                            @endeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>  
