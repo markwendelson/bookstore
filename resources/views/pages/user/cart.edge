@@ -62,11 +62,11 @@
         el: '#cart',
             data () {
                 return {
-                    myCart: [],
+                    myCart: @json($cart),
                 }
             },
             mounted () {
-                this.getCart()
+                // this.getCart()
                     // Swal.fire(
                     //     'Updated!',
                     //     'Information has been updated.',
