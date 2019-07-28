@@ -78,7 +78,7 @@ class UserController {
     }
     
     async userCart ({ view, auth }) {
-        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        let cart = await Cart.query().with('book').where('user_id', auth.user.id).fetch()
         cart = cart.toJSON()
         
         let total = cart.reduce(function (sum, crt) {
