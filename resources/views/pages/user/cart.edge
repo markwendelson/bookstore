@@ -29,7 +29,7 @@
                                     <td class="product-price"><span class="amount">@{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span></td>
                                     <td class="product-quantity"><input type="number" v-model="item.quantity"></td>
                                     <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
-                                    <td class="product-remove"><a href="#" v-on:click="removeItem(item)">X</a></td>
+                                    <td class="product-remove"><a href="#" @click="removeItem(item)">X</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -48,6 +48,7 @@
                     <div class="cart__total__amount">
                         <span>Grand Total</span>
                         <span>Php {{ total }}</span>
+                        <span v-text="cartTotal()"></span>
                     </div>
                 </div>
             </div>
@@ -62,16 +63,25 @@
         el: '#cart',
             data () {
                 return {
-                    myCart: @json($cart)
+                    myCart: []
                 }
             },
             mounted () {
-                // this.getCart()
+                this.getCart()
                     // Swal.fire(
                     //     'Updated!',
                     //     'Information has been updated.',
                     //     'success'
                     //     )
+            },
+            computed: {
+                cartTotal() {
+                    let total = [];
+                    Object.entries(this.myCart).forEach(([key, val]) => {
+                        total.push(val.price) // the value of the current key.
+                    });
+                    return total.reduce(function(total, num){ return total + num }, 0);
+                }
             },
             methods: {
                 getCart() {
@@ -93,14 +103,16 @@
                 },
                 removeItem(item) {
                     var app = this
-                    console.log(item)
-                    app.myCart.$remove(item);
-                    Swal.fire(
-                        'Deleted!',
-                        'Book deleted.',
-                        'success'
-                        )
-                }
+
+                    for( var i = 0; i < app.myCart.length; i++){ 
+                        if ( app.myCart[i].id === item.id) {
+                            app.myCart.splice(i, 1); 
+                            i--;
+                            console.log('deleted')
+                        }
+                    }
+                },
+                
             }
     })
 </script>
