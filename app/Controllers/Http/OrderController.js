@@ -33,8 +33,9 @@ class OrderController {
         });
     }
 
-    async store ({ request, response }) {
+    async store ({ request, response, session }) {
         const rules = {
+            order_no: 'required',
             book_id: 'required',
             user_id: 'required',
             price: 'required',
@@ -54,7 +55,8 @@ class OrderController {
             });
         }
 
-        const { book_id, user_id, price, quantity } = request.only([
+        const { order_no, book_id, user_id, price, quantity } = request.only([
+            'order_no',
             'book_id',
             'user_id',
             'price',
@@ -62,6 +64,7 @@ class OrderController {
         ])
 
         const order = await Orders.create({ 
+            order_no, 
             book_id, 
             user_id, 
             price,

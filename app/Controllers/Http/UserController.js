@@ -78,6 +78,7 @@ class UserController {
     }
     
     async userCart ({ view, auth }) {
+        const order_number = randomstring.generate(10);
         let cart = await Cart.query().with('book').where('user_id', auth.user.id).fetch()
         cart = cart.toJSON()
         
@@ -85,7 +86,7 @@ class UserController {
             return sum + (crt.quantity * (crt.book.price - (crt.book.price * (crt.book.discount/100)))) ;
         }, 0);
 
-        return view.render('pages.user.cart', { cart, total })
+        return view.render('pages.user.cart', { cart, total, order_number })
     }
 
     async userOrders ({ view, auth }) {
@@ -98,10 +99,12 @@ class UserController {
         return view.render('pages.user.orders', { orders, total })
     }
 
-    async userCheckout ({ request, view, auth }) {
-        let orders = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
-        const order_number = randomstring.generate(10);
-        return view.render('pages.user.checkout', { orders, order_number })
+    async userCheckout ({ request, view, auth, response }) {
+        // const order = request.collect(['order_no'])
+        // return response.json(order)
+        let orders = await Orders.query().with('book').where('user_id',auth.user.id).fetch()
+        orders = orders.toJSON()
+        return view.render('pages.user.checkout', { orders })
     }
 
     async userAccount ({ view }) {

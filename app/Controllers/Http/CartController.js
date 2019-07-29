@@ -32,7 +32,7 @@ class CartController {
         });
     }
 
-    async store ({ request, response }) {
+    async store ({ request, response, session }) {
         const rules = {
             book_id: 'required',
             user_id: 'required',
@@ -83,7 +83,7 @@ class CartController {
         });
     }
 
-    async update ({ params, request, response }) {
+    async update ({ params, request, response, session }) {
         const cart = await Cart.find(params.id)
        
         if (!cart) {

@@ -23,21 +23,36 @@
                                         <td class="product-name" colspan="6"><strong>Cart is empty</strong></td>
                                     </tr>
                                 @endif
-                                <tr v-for="item in myCart">
-                                    <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
-                                    <td class="product-name"><a href="#">@{{ item.book.book_name }}</a></td>
-                                    <td class="product-price"><span class="amount">@{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span></td>
-                                    <td class="product-quantity"><input type="number" v-model="item.quantity"></td>
-                                    <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
-                                    <td class="product-remove"><a href="#" @click="removeItem(item)">X</a></td>
-                                </tr>
+                                <form id="cart-form" action="{{ route('user.checkout') }}" method="POST">
+                                    {{ csrfField() }}
+                                    <input type="hidden" id="order_no" value="{{ order_number }}">
+                                    <tr v-for="item in myCart">
+                                        <td class="product-thumbnail">
+                                            <a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a>
+                                        </td>
+                                        <td class="product-name">
+                                            <input type="hidden" id="book_id[]" v-model="item.id">
+                                            <a href="#">@{{ item.book.book_name }}</a>
+                                        </td>
+                                        <td class="product-price">
+                                            <span class="amount">@{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span>
+                                            <input type="hidden" id="price[]" v-text="">
+                                        </td>
+                                        <td class="product-quantity">
+                                            <input id="quantity[]" type="number" min="1" v-model="item.quantity">
+                                        </td>
+                                        <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
+                                        <td class="product-remove"><a href="#" @click="removeItem(item.id)">X</a></td>
+                                    </tr>
+                                </form>
                             </tbody>
                         </table>
                     </div>
                 <div class="cartbox__btn">
                     <ul class="cart__btn__list d-flex flex-wrap flex-md-nowrap flex-lg-nowrap">
                         <li><a href="#" v-on:click="updateCart()">Update Cart</a></li>
-                        <li class="ml-5"><a href="#" v-on:click="submitCart()" class="btn btn-submit">Check Out</a></li>
+                        {{--  <li class="ml-5"><a href="{{ route('user.checkout') }}" @click="event.preventDefault(); document.getElementById('cart-form').submit();" class="btn btn-submit">Check Out</a></li>  --}}
+                        <li class="ml-5"><a href="#" @click="submitCart()" class="btn btn-submit">Check Out</a></li>
                     </ul>
                 </div>
             </div>
@@ -47,8 +62,7 @@
                 <div class="cartbox__total__area">
                     <div class="cart__total__amount">
                         <span>Grand Total</span>
-                        <span>Php {{ total }}</span>
-                        <span v-text="cartTotal()"></span>
+                        <span>Php @{{ cartTotal }}</span>
                     </div>
                 </div>
             </div>
@@ -63,22 +77,17 @@
         el: '#cart',
             data () {
                 return {
-                    myCart: []
+                    myCart: [],
                 }
             },
             mounted () {
                 this.getCart()
-                    // Swal.fire(
-                    //     'Updated!',
-                    //     'Information has been updated.',
-                    //     'success'
-                    //     )
             },
             computed: {
                 cartTotal() {
                     let total = [];
-                    Object.entries(this.myCart).forEach(([key, val]) => {
-                        total.push(val.price) // the value of the current key.
+                    Object.entries(this.myCart).forEach(([key, item]) => {
+                        total.push(item.quantity * (item.book.price - (item.book.price * (item.book.discount/100)))) // the value of the current key.
                     });
                     return total.reduce(function(total, num){ return total + num }, 0);
                 }
@@ -86,7 +95,7 @@
             methods: {
                 getCart() {
                     var app = this
-                    axios.get('/account/checkout')
+                    axios.get('/account/cart/items')
                     .then(function (response) {
                         app.myCart = response.data
                     })
@@ -95,24 +104,80 @@
                     });
                 },
                 updateCart() {
+                    var app = this
+                    for( var i = 0; i < app.myCart.length; i++){ 
+                        axios.put('cart/' + app.myCart[i].id, {
+                                quantity: app.myCart[i].quantity
+                            })
+                            .then(function (response) {
+                                console.log(response)
+                            })
+                            .catch( function(errror){
+                                console.log('error: ', errror);
+                        });
+                    }
+
                     Swal.fire(
-                        'Updated!',
-                        'Information has been updated.',
-                        'success'
+                        'Update',
+                        'Cart has been updated.',
+                        'success',
                         )
                 },
                 removeItem(item) {
                     var app = this
 
                     for( var i = 0; i < app.myCart.length; i++){ 
-                        if ( app.myCart[i].id === item.id) {
+                        if ( app.myCart[i].id === item) {
                             app.myCart.splice(i, 1); 
                             i--;
-                            console.log('deleted')
                         }
                     }
+                    console.log(item)
+                    
+                    // Show alert box
+                    Swal.fire(
+                        'Deleted',
+                        'Book has been deleted.',
+                        'success'
+                        )
                 },
-                
+                submitCart() {
+                    var app = this
+                    var order_no = document.getElementById('order_no').value
+                    if (!app.myCart.length)
+                        return
+                    else
+                    for( var i = 0; i < app.myCart.length; i++){ 
+                        axios.post('order/store', {
+                                order_no: order_no,
+                                book_id: app.myCart[i].book_id,
+                                user_id: {{ auth.user.id }},
+                                price: app.myCart[i].quantity * (app.myCart[i].book.price - (app.myCart[i].book.price * (app.myCart[i].book.discount/100))),
+                                quantity: app.myCart[i].quantity,
+                            })
+                            .then(function (response) {
+                                console.log(response.data.message)
+
+                            })
+                            .catch( function(errror){
+                                console.log('error: ', errror);
+                        });
+                    }
+                    for( var i = 0; i < app.myCart.length; i++){
+                        axios.delete('cart/' + this.myCart[i].id)
+                            .then(function (response) {
+                                console.log(response.data.message)
+                        })
+                    }
+
+                    Swal.fire(
+                        'Saved',
+                        'Book(s) has been ordered.',
+                        'success',
+                        ).then(function (e){
+                            console.log('redirect now')
+                        })
+                }
             }
     })
 </script>
