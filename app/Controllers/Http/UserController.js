@@ -5,6 +5,7 @@ const User = use('App/Models/User')
 const Book = use('App/Models/Book')
 const Cart = use('App/Models/Cart')
 const Orders = use('App/Models/Order')
+const Category = use('App/Models/Category')
 var randomstring = require("randomstring")
 
 class UserController {
@@ -34,7 +35,7 @@ class UserController {
           return response.status(204).json(null)
     }
 
-    async update ({ params, request, response }) {
+    async update ({ auth, request, response, session }) {
         const rules = {
             firstname: 'required',
             middlename: 'required',
@@ -50,7 +51,7 @@ class UserController {
       
             return response.json({
                 message: validation.messages(),
-                status: 200,
+                status: 'error',
                 data: null
             });
         }
@@ -63,9 +64,13 @@ class UserController {
             'email'
         ])
 
-        const user = await User.find(params.id)
+        const user = await User.find(auth.user.id)
         if (!user) {
-            return response.status(404).json(null)
+            return response.json({
+                message: 'Invalid user.',
+                status: 'error',
+                data: null
+            });
         }
         user.firstname = userInfo.firstname
         user.middlename = userInfo.middlename
@@ -75,7 +80,11 @@ class UserController {
        
         await user.save()
 
-        return response.status(200).json(user)
+        return response.json({
+            message: 'Successfully updated account.',
+            status: 'success',
+            data: user
+        });
     }
     
     async userCart ({ view, auth }) {
@@ -120,9 +129,12 @@ class UserController {
     async userBooks ({ view, auth, response }) {
         let books = await Book.query().with('category').where('created_by',auth.user.id).fetch()
         books = books.toJSON()
-        // return response.json(books)
 
-        return view.render('management.books', { books })
+        let categories = await Category.all()
+        categories = categories.toJSON()
+
+
+        return view.render('management.books', { books, categories })
     }
 
 }

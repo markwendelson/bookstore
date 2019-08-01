@@ -6,32 +6,93 @@
             <div class="col-lg-6 col-12">
                 <div class="my__account__wrapper">
                     <h3 class="account__title">My Account</h3>
-                    <form action="#">
-                        <div class="account__form">
+                        <div id="account-form" class="account__form">
                             <div class="input__box">
                                 <label>Firstname <span>*</span></label>
-                                <input type="text" name="firstname">
+                                <input type="text" name="firstname" v-model="firstname">
                             </div>
                             <div class="input__box">
                                 <label>Middlename <span>*</span></label>
-                                <input type="text" name="middlename">
+                                <input type="text" name="middlename" v-model="middlename">
                             </div>
                             <div class="input__box">
                                 <label>Lastname <span>*</span></label>
-                                <input type="text" name="lastname">
+                                <input type="text" name="lastname" v-model="lastname">
                             </div>
                             <div class="input__box">
                                 <label>Email address <span>*</span></label>
-                                <input type="email" name="email">
+                                <input type="email" name="email" v-model="email">
+                            </div>
+                            <div class="input__box">
+                                <label>Contach Number <span>*</span></label>
+                                <input type="text" name="contact_no" v-model="contact_no">
                             </div>
                             <div class="form__btn">
-                                <button>Update</button>
+                                <button v-on:click="updateAccount">Update</button>
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
+@endsection
+@section('extra_scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#account-form',
+            data () {
+                return {
+                    id: '{{ auth.user.id }}',
+                    firstname: '{{ auth.user.firstname }}',
+                    middlename: '{{ auth.user.middlename }}',
+                    lastname: '{{ auth.user.lastname }}',
+                    email: '{{ auth.user.email }}',
+                    contact_no: '{{ auth.user.contact_no }}',
+                }
+            },
+            mounted () {
+                
+            },
+            methods: {
+                updateAccount() {
+                    var app = this
+                    axios.put('user/'+ app.id,{
+                        firstname: app.firstname,
+                        middlename: app.middlename,
+                        lastname: app.lastname,
+                        email: app.email,
+                        contact_no: app.contact_no,
+                        image: app.image,
+                    })
+                    .then(function(response){
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully updated.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('user.books') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to update account.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                    .catch(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Failed to update account.',
+                            response.message,
+                        )
+                    })
+                }
+            }
+    })
+  </script>
 @endsection

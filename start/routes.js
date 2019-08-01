@@ -24,7 +24,7 @@ Route.group(()=> {
     Route.get('/register', 'AuthController.showRegister').as('auth.register').middleware('guest')
     Route.get('/forgot-password', 'AuthController.forgotPassword').as('auth.forgotpassword').middleware('auth')
     Route.get('/change-password', 'AuthController.changePassword').as('auth.changepassword').middleware('auth')
-    Route.get('/account', 'UserController.userAccount').as('user.account').middleware('auth')
+    Route.get('/info', 'UserController.userAccount').as('user.account').middleware('auth')
     Route.get('/cart', 'UserController.userCart').as('user.cart').middleware('auth')
     Route.get('/orders', 'UserController.userOrders').as('user.order').middleware('auth')
     Route.get('/books', 'UserController.userBooks').as('user.books').middleware('auth')
@@ -40,6 +40,7 @@ Route.group(()=> {
 }).prefix('users')
 
 Route.get('/user/:id', 'UserController.show')
+Route.put('/user/:id', 'UserController.update').as('user.update').middleware('auth')
 
 // category
 Route.group(()=> {
@@ -52,11 +53,11 @@ Route.group(()=> {
 
 // books
 Route.group(()=> {
-    Route.get('list', 'BookController.index')
-    Route.get(':id', 'BookController.show')
-    Route.delete(':id', 'BookController.destroy')
-    Route.post('store', 'BookController.store')
-    Route.put(':id', 'BookController.update')
+    Route.get('list', 'BookController.index').as('book.list')
+    Route.get(':id', 'BookController.show').as('book.show')
+    Route.delete(':id', 'BookController.destroy').as('book.delete')
+    Route.post('store', 'BookController.store').as('book.store')
+    Route.put(':id', 'BookController.update').as('book.update')
 }).prefix('book')
 
 // orders

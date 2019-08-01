@@ -39,7 +39,7 @@ class BookController {
         });
     }
 
-    async store ({ request, session, response }) {
+    async store ({ request, session, response, auth }) {
         const rules = {
             book_name: 'required',
             description: 'required',
@@ -56,20 +56,23 @@ class BookController {
       
             return response.json({
                 message: validation.messages(),
-                status: 200,
+                status: 'error',
                 data: null
             });
         }
   
-        const { book_name, description, author, category_id, price, quantity, discount } = request.only([
+        const { book_name, description, author, category_id, price, quantity, discount, image } = request.only([
             'book_name',
             'description',
             'author',
             'category_id',
             'price',
             'quantity',
-            'discount'
+            'discount',
+            'image'
         ])
+        
+        var created_by = auth.user.id
 
         const book = await Books.create({ 
             book_name, 
@@ -78,12 +81,14 @@ class BookController {
             category_id, 
             price, 
             quantity,
-            discount
+            discount,
+            image,
+            created_by,
          })
 
         return response.json({
-            message: "book added",
-            status: 201,
+            message: "New book added successfully.",
+            status: 'success',
             data: book
         });
     }
@@ -94,8 +99,8 @@ class BookController {
         await book.delete()
 
         return response.json({
-            message: "book deleted",
-            status: 204,
+            message: "Book deleted",
+            status: 'success',
             data: null
         }); 
     }
@@ -148,8 +153,8 @@ class BookController {
         await book.save()
 
         return response.json({
-            message: "book updated",
-            status: 200,
+            message: "Book updated successfully.",
+            status: 'success',
             data: book
         });
     }

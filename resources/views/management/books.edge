@@ -11,17 +11,17 @@
 @endsection
 @section('content')
 <section class="cart-main-area section-padding--lg mt-5 bg--white">
-    <div class="container">
+    <div id="book-form" class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12 ol-lg-12">
                 <div class="row">
                     <div class="col-lg-6 col-12">
-                        <h3 class="account__title">My Books</h3>
+                        <h3 class="account__title">My Books ({{ books.length }})</h3>
                     </div>
                     <div class="col-lg-6 col-12">
                         <div class="account__form pt-0 pl-0 pb-0 pr-0 mb-1 mt-0 pull-right">
                             <div class="form__btn">
-                                <a class="bookForm__active" href="#">Add Book</a>
+                                <a href="/book/add" onclick="event.preventDefault();" v-on:click="addModal">Add Book</a>
                                 <a href="#">Add Book Category</a>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                                 <th class="product-price">Discount</th>
                                 <th class="product-quantity">Quantity</th>
                                 <th class="product-name">Category</th>
-                                <th class="product-name"></th>
+                                <th class="product-name" style="border-right:1px"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,7 +54,7 @@
                                 <td class="product-price"><span class="amount">{{ item.discount }}%</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
                                 <td class="product-name">{{ item.category.category || ''}}</td>
-                                <td class="product-name"><a href="">Edit</a> <a href="">Remove</a></td>
+                                <td class="product-name"><a href="{{ route('book.show', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="editModal({{ item.id }})">Edit</a> <a href="{{ route('book.delete', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="deleteBook({{ item.id }})">Remove</a></td>
                             </tr>
                             @endeach
                         </tbody>
@@ -62,71 +62,255 @@
                 </div>
             </div>
         </div>
+
+        <!-- Start Book form Popup -->
+        <div id="modal-form" class="box-search-content bookForm_active block-bg close__top modal-form">
+            <div class="pull-left" style="top:35px;left:90px;font-size:large;position:relative">
+                <h2 class="contact__title modal-title">@{{ state === 'add' ? 'Add New Book' : 'Edit Book' }}</h2>
+            </div>
+            <div class="col-lg-12 col-12" style="margin-top:90px;background: white;padding-top:20px;padding-bottom:50px">
+                <div class="contact-form-wrap">
+                        <div class="single-contact-form space-between">
+                            <div class="row col-lg-12">
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Name</label>
+                                    <input type="text" name="book_name" v-model="book_name" placeholder="Book Name*">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Author</label>
+                                    <input type="text" name="author" v-model="author" placeholder="Book Author*">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-contact-form space-between">
+                            <div class="row col-lg-12">
+                                <div class="col-md-12">
+                                    <label class="pull-left ml-2">Book Description</label>
+                                    <textarea class="ml-2" name="description" v-model="description" placeholder="Type your book description here.."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-contact-form space-between">
+                            <div class="row col-lg-12">
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Category</label>
+                                    <div class="row col-lg-12">
+                                        <div class="col-lg-12 col-md-12">
+                                            <select id="category" v-model="category" style="
+                                            font-size: 1rem;
+                                            width: 100%;">
+                                            @each(cat in categories)
+                                                <option value="{{ cat.id }}">{{ cat.category }}</option>
+                                            @endeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Quantity</label>
+                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="single-contact-form space-between">
+                                <div class="row col-lg-12">
+                                    <div class="col-md-6">
+                                        <label class="pull-left ml-2">Book Price</label>
+                                        <input type="text" name="price" v-model="price" placeholder="Book Price">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="pull-left ml-2">Book Discount</label>
+                                        <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="addtocart-btn pull-right mr-5 mt-0">
+                        <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveBook' : 'updateBook' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
+                        </div>
+                </div> 
+            </div>
+            <div class="close__wrap" v-on:click="closeModal">
+                <span>close</span>
+            </div>
+        </div>
+        <!-- End Book form Popup -->
     </div>  
 </section>
 
-<!-- Start Book form Popup -->
-<div class="box-search-content bookForm_active block-bg close__top modal-form">
-    <div class="pull-left" style="top:35px;left:90px;font-size:large;position:relative">
-        <h2 class="contact__title modal-title">Add New Book</h2>
-    </div>
-    <div class="col-lg-12 col-12" style="margin-top:90px;background: white;padding-top:20px;padding-bottom:50px">
-        <div class="contact-form-wrap">
-            
-            <form id="book-form" action="#" method="post">
-                <div class="single-contact-form space-between">
-                    <div class="row col-lg-12">
-                        <div class="col-md-6">
-                            <label class="pull-left ml-2">Book Name</label>
-                            <input type="text" name="book_name" placeholder="Book Name*">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="pull-left ml-2">Book Author</label>
-                            <input type="text" name="lastname" placeholder="Book Author*">
-                        </div>
-                    </div>
-                </div>
-                <div class="single-contact-form space-between">
-                    <div class="row col-lg-12">
-                        <div class="col-md-12">
-                            <label class="pull-left ml-2">Book Description</label>
-                            <textarea class="ml-2" name="message" placeholder="Type your book description here.."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="single-contact-form space-between">
-                    <div class="row col-lg-12">
-                        <div class="col-md-6">
-                            <label class="pull-left ml-2">Book Category</label>
-                            <input type="text" name="book_name" placeholder="Book Category">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="pull-left ml-2">Book Quantity</label>
-                            <input type="text" name="lastname" placeholder="Book Quantity">
-                        </div>
-                    </div>
-                </div>
-                <div class="single-contact-form space-between">
-                        <div class="row col-lg-12">
-                            <div class="col-md-6">
-                                <label class="pull-left ml-2">Book Price</label>
-                                <input type="text" name="book_name" placeholder="Book Price">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="pull-left ml-2">Book Discount</label>
-                                <input type="text" name="lastname" placeholder="Book Discount">
-                            </div>
-                        </div>
-                    </div>
-                <div class="addtocart-btn pull-right mr-5">
-                    <a href="#">Save</a>
-                </div>
-            </form>
-        </div> 
-    </div>
-    <div class="close__wrap">
-        <span>close</span>
-    </div>
-</div>
-<!-- End Book form Popup -->
+@endsection
+
+@section('extra_scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#book-form',
+            data () {
+                return {
+                    id: '{{ id }}',
+                    book_name: '{{ book_name }}',
+                    description: '{{ description }}',
+                    author: '{{ author }}',
+                    category: '{{ category }}',
+                    price: '{{ price }}',
+                    discount: '{{ discount }}',
+                    quantity: '{{ quantity }}',
+                    image: '{{ image }}',
+                    state: null,
+                }
+            },
+            mounted () {
+                
+            },
+            methods: {
+                deleteBook(id) {
+                    console.log('deleting ' +id)
+                    Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    })
+                    .then((result) => {
+                        // Send request to the server
+                        if (result.value) {
+                            axios.delete('book/'+ id)
+                            .then(function(response){
+                                if (response.data.status == 'success') {
+                                    Swal.fire(
+                                        response.data.message,
+                                        'Successfully delete.',
+                                        response.data.status,
+                                    ).then(function(){
+                                        window.location = '{{ route('user.books') }}'
+                                    })
+                                }
+                                else if(response.data.status == 'error') {
+                                    Swal.fire(
+                                        response.data.message,
+                                        'Failed to delete book.',
+                                        response.data.status,
+                                    )
+                                }
+                            })
+                            .catch(function (response) {
+                                Swal.fire(
+                                    response.message,
+                                    'Failed to delete account.',
+                                    response.message,
+                                )
+                            })
+                        }
+                    })
+                },
+                addModal() {
+                    var app = this
+                    app.state = 'add';
+                    $('.bookForm_active').toggleClass('is-visible');
+                    console.log(app.state)
+                },
+                editModal(id) {
+                    var app = this
+                    axios.get('book/' +id)
+                    .then(function(response){
+                        app.id = id
+                        app.book_name = response.data.data.book.book_name
+                        app.description = response.data.data.book.description
+                        app.author = response.data.data.book.author
+                        app.category = response.data.data.book.category_id
+                        app.price = response.data.data.book.price
+                        app.discount = response.data.data.book.discount
+                        app.quantity = response.data.data.book.quantity
+                        app.image = response.data.data.book.image
+                    })
+                    app.state = 'edit';
+                    $('.bookForm_active').toggleClass('is-visible');
+                    console.log(app.state)
+                },
+                saveBook() {
+                    var app = this
+                    axios.post('book/store',{
+                        book_name: app.book_name,
+                        description: app.description,
+                        author: app.author,
+                        category_id: app.category,
+                        price: app.price,
+                        discount: app.discount,
+                        quantity: app.quantity,
+                        image: app.image,
+                    })
+                    .then(function(response){
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully added.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('user.books') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to add book.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                    .catch(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Failed to add book.',
+                            response.message,
+                        )
+                    })
+                },
+                updateBook() {
+                    var app = this
+                    axios.put('book/'+ app.id,{
+                        book_name: app.book_name,
+                        description: app.description,
+                        author: app.author,
+                        category: app.category_id,
+                        price: app.price,
+                        discount: app.discount,
+                        quantity: app.quantity,
+                        image: app.image,
+                    })
+                    .then(function(response){
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully updated.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('user.books') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to update book.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                    .catch(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Failed to update book.',
+                            response.message,
+                        )
+                    })
+                },
+                closeModal() {
+                    var app = this
+                    app.state = '';
+                    $('.bookForm_active').removeClass('is-visible');
+                }
+            }
+    })
+  </script>
 @endsection
