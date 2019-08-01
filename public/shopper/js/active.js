@@ -322,6 +322,21 @@
     searchToggler();
 
 
+/*============= BookForm Toggler ==============*/
+    function bookFormToggler() {
+      var trigger = $('.bookForm__active'),
+        container = $('.bookForm_active');
+      trigger.on('click', function (e) {
+        e.preventDefault();
+        container.toggleClass('is-visible');
+      });
+      $('.close__wrap').on('click', function () {
+        container.removeClass('is-visible');
+      });
+  }
+  bookFormToggler();
+
+
 /*============= Cart Toggler ==============*/
     function cartToggler() {
         var trigger = $('.cartbox_active'),

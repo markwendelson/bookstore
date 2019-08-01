@@ -6,8 +6,7 @@
             <div class="col-lg-6 col-12">
                 <div class="my__account__wrapper" id="register">
                     <h3 class="account__title">Register</h3>
-                    <form id="register-form" method="POST" action="{{ route('auth.register')}}">
-                        {{ csrfField() }}
+                    <form id="register-form" method="POST">
                         <div class="account__form">
                             <div class="input__box">
                                 <label>Firstname <span>*</span></label>
@@ -39,20 +38,25 @@
                             </div>
                             <div class="input__box">
                                 <label>Password<span>*</span></label>
-                                <input type="password" name="password" v-model="password" class="form-control" :class="{'is-invalid': errors.has('password')}" v-validate="'required'" placeholder="Password">
+                                <input type="password" name="password" v-model="password" class="form-control" :class="{'is-invalid': errors.has('password')}" v-validate="'required'" placeholder="Password" ref="password">
                                 <small class="text-danger" v-cloak>
                                     @{{ errors.first('password') }}
                                 </small>
                             </div>
                             <div class="input__box">
                                 <label>Confirm Password<span>*</span></label>
-                                <input type="password" name="confirm_password" class="form-control" :class="{'is-invalid': errors.has('confirm_password')}" v-validate="'required|confirmed:password|regex: /^\S*$/'" placeholder="Confirm Password">
+                                <input type="password" name="confirm_password" class="form-control" :class="{'is-invalid': errors.has('confirm_password')}" v-validate="'required|confirmed:password'" data-vv-as="password" placeholder="Confirm Password">
                                 <small class="text-danger" v-cloak>
                                     @{{ errors.first('confirm_password') }}
                                 </small>
                             </div>
                             <div class="form__btn">
-                                <button type="submit">Register</button>
+                                <a href="{{ route('auth.register') }}" 
+                                    onclick="event.preventDefault();"
+                                    v-on:click="submit"
+                                >
+                                    Register
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -64,6 +68,7 @@
 @endsection
 
 @section('extra_scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script type="text/javascript">
     const error_msg = {
         custom: {
@@ -89,17 +94,46 @@
                 }
             },
             mounted () {
-                document.getElementById('register-form')
-                    .addEventListener('submit', this.onSubmit)
             },
             methods: {
-                onSubmit (e) {
+                submit() {
                     this.$validator.validate()
                         .then((valid) => {
                             if (!valid) {
-                                e.preventDefault()
+                                Swal.fire(
+                                    'Fail',
+                                    'Please complete all the required fields.',
+                                    'error',
+                                )
+                            }
+                            else {
+                                this.register()
                             }
                         })
+                },
+                register() {
+                    var app = this
+                    axios.post('{{route ('auth.register')}}',{
+                        firstname: app.firstname,
+                        middlename: app.middlename,
+                        lastname: app.lastname,
+                        email: app.email,
+                        password: app.password,
+                    })
+                    .then(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Account has been created.',
+                            response.message,
+                        )
+                    })
+                    .catch(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Account not created.',
+                            response.message,
+                        )
+                    })
                 }
             }
     })

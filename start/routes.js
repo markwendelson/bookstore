@@ -17,6 +17,7 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index').as('page.index')
+Route.get('/error', 'PageController.pageNotFound').as('page.notFound')
 
 Route.group(()=> {
     Route.get('/login', 'AuthController.showLogin').as('auth.login').middleware('guest')

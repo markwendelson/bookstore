@@ -54,7 +54,7 @@ class AuthController {
       
             return response.json({
                 message: validation.messages(),
-                status: 200,
+                status: 'error',
                 data: null
             });
         }
@@ -77,10 +77,13 @@ class AuthController {
             password
         })
 
-        return response.status(201).send({ message: 'Registration successful' })
+        return response.json({
+            message: 'Registration successful',
+            status: 'success',
+        });
     }
 
-    async login ({ request, response, auth }) {
+    async login ({ request, response, session, auth }) {
         const rules = {
             email: 'required|email',
             password: 'required'
@@ -95,7 +98,6 @@ class AuthController {
             return response.json({
                 message: validation.messages(),
                 status: 200,
-                data: null
             });
         }
 
@@ -103,12 +105,11 @@ class AuthController {
 
         const user = await auth.attempt(email, password)
 
-        // return response.json({
-        //     message: "login success",
-        //     status: 200,
-        //     data: user
-        // });
-        return response.route('page.index')
+        // return response.route('page.index')
+        return response.json({
+            message: 'Successfuly login.',
+            status: 'success',
+        });
     }
 
     async changePassword ({ params, request, response }) {

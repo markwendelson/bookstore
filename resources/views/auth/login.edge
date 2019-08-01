@@ -11,7 +11,7 @@
                         <div class="account__form">
                             <div class="input__box">
                                 <label>Email address <span>*</span></label>
-                                <input type="email" name="email" class="form-control" :class="{'is-invalid': errors.has('email')}" v-validate="'required|email'" placeholder="Email address">
+                                <input type="email" name="email" v-model="email" class="form-control" :class="{'is-invalid': errors.has('email')}" v-validate="'required|email'" placeholder="Email address">
                                 <small class="text-danger" v-cloak>
                                     @{{ errors.first('email') }}
                                 </small>
@@ -24,7 +24,12 @@
                                 </small>
                             </div>
                             <div class="form__btn">
-                                <button>Login</button>
+                                    <a href="{{ route('auth.login') }}" 
+                                    onclick="event.preventDefault();"
+                                    v-on:click="submit"
+                                >
+                                    Login
+                                </a>
                                 <label class="label-for-checkbox">
                                     <input id="rememberme" class="input-checkbox" name="rememberme" value="forever" type="checkbox">
                                     <span>Remember me</span>
@@ -51,23 +56,54 @@
                 }
             },
             mounted () {
-                document.getElementById('login-form')
-                    .addEventListener('submit', this.onSubmit)
-
-                    // Swal.fire(
-                    //     'Updated!',
-                    //     'Information has been updated.',
-                    //     'success'
-                    //     )
             },
             methods: {
-                onSubmit (e) {
+                submit() {
                     this.$validator.validate()
                         .then((valid) => {
                             if (!valid) {
-                                e.preventDefault()
+                                Swal.fire(
+                                    'Fail',
+                                    'Please complete all the required fields.',
+                                    'error',
+                                )
+                            }
+                            else {
+                                this.login()
                             }
                         })
+                },
+                login() {
+                    var app = this
+                    axios.post('{{route ('auth.login')}}',{
+                        email: app.email,
+                        password: app.password,
+                    })
+                    .then(function (response) {
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully login.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('page.index') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to login account.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                    .catch(function (response) {
+                        Swal.fire(
+                            response.message,
+                            'Failed to login account.',
+                            response.message,
+                        )
+                    })
                 }
             }
     })

@@ -21,7 +21,27 @@ class ExceptionHandler extends BaseExceptionHandler {
    * @return {void}
    */
   async handle (error, { request, response }) {
-    response.status(error.status).send(error.message)
+    if (error.code == 'E_PASSWORD_MISMATCH') {
+      return response.json({
+        message: 'Password mismatch.',
+        status: 'error',
+      })
+    }
+    else if (error.code == 'E_USER_NOT_FOUND') {
+      return response.json({
+        message: 'Account not found.',
+        status: 'error',
+      })
+    }
+    else if(error.code == 'E_GUEST_ONLY') {
+      return response.route('page.index')
+    }
+    else if(error.code == 'E_ROUTE_NOT_FOUND') {
+      return response.route('page.notFound')
+    }
+    else {
+      response.status(error.status).send(error.message)
+    }
   }
 
   /**

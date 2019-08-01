@@ -5018,7 +5018,7 @@ h3.widget-title-modal {
     border-radius: 0;
     max-width: 100%;
     padding: 10px;
-    height: 180px;
+    height: 75px;
     padding: 0px;
 	border-left: 0;
     border-right: 0;
@@ -5165,6 +5165,21 @@ h3.widget-title-modal {
       height: 40px;
       width: 100%;
       padding: 0 0 0 10px; }
+  .account__form .form__btn a {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 2px solid #333;
+    color: #333;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 34px;
+    padding: 2px 20px 0;
+    text-transform: uppercase;
+    transition: all 0.4s ease 0s; }
+    .account__form .form__btn a:hover {
+      background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+      border-color: #029241;
+      color: #029241; }
   .account__form .form__btn button {
     background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border: 2px solid #333;

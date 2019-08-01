@@ -46,6 +46,10 @@ class User extends Model {
   cart () {
     return this.hasMany('App/Models/Cart')
   }
+
+  book () {
+    return this.hasMany('App/Models/Book', 'id', 'created_by')
+  }
 }
 
 module.exports = User

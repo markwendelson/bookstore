@@ -1,1 +1,132 @@
-Manage Books
+@layout('master')
+@section('extra_css')
+<style>
+    .modal-form {
+        background: black;
+    }
+    .modal-title {
+        color: #029241;
+    }
+</style>
+@endsection
+@section('content')
+<section class="cart-main-area section-padding--lg mt-5 bg--white">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ol-lg-12">
+                <div class="row">
+                    <div class="col-lg-6 col-12">
+                        <h3 class="account__title">My Books</h3>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="account__form pt-0 pl-0 pb-0 pr-0 mb-1 mt-0 pull-right">
+                            <div class="form__btn">
+                                <a class="bookForm__active" href="#">Add Book</a>
+                                <a href="#">Add Book Category</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-content wnro__table table-responsive">
+                    <table>
+                        <thead>
+                            <tr class="title-top">
+                                <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Book name</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-price">Discount</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-name">Category</th>
+                                <th class="product-name"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!books.length)
+                                <tr>
+                                    <td class="product-name" colspan="6"><strong>No book(s) found.</strong></td>
+                                </tr>
+                            @endif
+                            @each(item in books)
+                            <tr>
+                                <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
+                                <td class="product-name"><a href="#">{{ item.book_name }}</a></td>
+                                <td class="product-price"><span class="amount">{{ item.price }}</span></td>
+                                <td class="product-price"><span class="amount">{{ item.discount }}%</span></td>
+                                <td class="product-quantity">{{ item.quantity}}</td>
+                                <td class="product-name">{{ item.category.category || ''}}</td>
+                                <td class="product-name"><a href="">Edit</a> <a href="">Remove</a></td>
+                            </tr>
+                            @endeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>  
+</section>
+
+<!-- Start Book form Popup -->
+<div class="box-search-content bookForm_active block-bg close__top modal-form">
+    <div class="pull-left" style="top:35px;left:90px;font-size:large;position:relative">
+        <h2 class="contact__title modal-title">Add New Book</h2>
+    </div>
+    <div class="col-lg-12 col-12" style="margin-top:90px;background: white;padding-top:20px;padding-bottom:50px">
+        <div class="contact-form-wrap">
+            
+            <form id="book-form" action="#" method="post">
+                <div class="single-contact-form space-between">
+                    <div class="row col-lg-12">
+                        <div class="col-md-6">
+                            <label class="pull-left ml-2">Book Name</label>
+                            <input type="text" name="book_name" placeholder="Book Name*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="pull-left ml-2">Book Author</label>
+                            <input type="text" name="lastname" placeholder="Book Author*">
+                        </div>
+                    </div>
+                </div>
+                <div class="single-contact-form space-between">
+                    <div class="row col-lg-12">
+                        <div class="col-md-12">
+                            <label class="pull-left ml-2">Book Description</label>
+                            <textarea class="ml-2" name="message" placeholder="Type your book description here.."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="single-contact-form space-between">
+                    <div class="row col-lg-12">
+                        <div class="col-md-6">
+                            <label class="pull-left ml-2">Book Category</label>
+                            <input type="text" name="book_name" placeholder="Book Category">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="pull-left ml-2">Book Quantity</label>
+                            <input type="text" name="lastname" placeholder="Book Quantity">
+                        </div>
+                    </div>
+                </div>
+                <div class="single-contact-form space-between">
+                        <div class="row col-lg-12">
+                            <div class="col-md-6">
+                                <label class="pull-left ml-2">Book Price</label>
+                                <input type="text" name="book_name" placeholder="Book Price">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="pull-left ml-2">Book Discount</label>
+                                <input type="text" name="lastname" placeholder="Book Discount">
+                            </div>
+                        </div>
+                    </div>
+                <div class="addtocart-btn pull-right mr-5">
+                    <a href="#">Save</a>
+                </div>
+            </form>
+        </div> 
+    </div>
+    <div class="close__wrap">
+        <span>close</span>
+    </div>
+</div>
+<!-- End Book form Popup -->
+@endsection

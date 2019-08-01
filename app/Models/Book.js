@@ -19,6 +19,10 @@ class Book extends Model {
     order () {
         return this.hasOne('App/Models/Order', 'id', 'book_id')
     }
+
+    user () {
+        return this.belongsTo('App/Models/User', 'created_by', 'id')
+    }
 }
 
 module.exports = Book

@@ -44222,13 +44222,12 @@ window.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-url
 window.axios.defaults.headers.common.crossDomain = true;
 window.axios.defaults.baseURL = 'http://localhost:3333';
 var token = document.head.querySelector('meta[name="csrf-token"]');
-
-if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-  console.log('Token ' + token);
-  console.error('CSRF token not found: https://adonisjs.com/docs/4.1/csrf');
-}
+console.log('Token ' + token); // if (token) {
+//   window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+// } else {
+//   console.log('Token '+ token)
+//   console.error('CSRF token not found: https://adonisjs.com/docs/4.1/csrf');
+// }
 
 /***/ }),
 

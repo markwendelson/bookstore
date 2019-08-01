@@ -2,6 +2,7 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
+const Book = use('App/Models/Book')
 const Cart = use('App/Models/Cart')
 const Orders = use('App/Models/Order')
 var randomstring = require("randomstring")
@@ -114,6 +115,14 @@ class UserController {
     async userGetCheckout ({ auth, response }) {
         let orders = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
         return response.json(orders)
+    }
+
+    async userBooks ({ view, auth, response }) {
+        let books = await Book.query().with('category').where('created_by',auth.user.id).fetch()
+        books = books.toJSON()
+        // return response.json(books)
+
+        return view.render('management.books', { books })
     }
 
 }
