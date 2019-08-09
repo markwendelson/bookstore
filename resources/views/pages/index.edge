@@ -11,29 +11,12 @@
                         <h3 class="wedget__title">Book Categories</h3>
                         <ul>
                             @each(category in categories)
-                                <li><a href="#">{{ category.category }} <span>({{ category.book.length }})</span></a></li>
+                                    <li><a href="/book/?category={{ category.category }}" 
+                                    onclick="event.preventDefault();"
+                                    v-on:click="addToCart"
+                                    >{{ category.category }} <span>({{ category.book.length }})</span></a></li>
                             @endeach
                         </ul>
-                    </aside>
-                    <aside class="wedget__categories pro--range">
-                        <h3 class="wedget__title">Filter by price</h3>
-                        <div class="content-shopby">
-                            <div class="price_filter s-filter clear">
-                                <form action="#" method="GET">
-                                    <div id="slider-range"></div>
-                                    <div class="slider__range--output">
-                                        <div class="price__output--wrap">
-                                            <div class="price--output">
-                                                <span>Price :</span><input type="text" id="amount" readonly="">
-                                            </div>
-                                            <div class="price--filter">
-                                                <a href="#">Filter</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </aside>
                 </div>
             </div>
@@ -70,34 +53,28 @@
                             @each(book in books.data)
                                 <div class="product product__style--3 col-lg-4 col-md-4 col-sm-6 col-12">
                                     <div class="product__thumb">
-                                        <a class="first__img" href="single-product.html"><img src="/shopper/images/books/1.jpg" alt="product image"></a>
-                                        <a class="second__img animation1" href="single-product.html"><img src="/shopper/images/books/2.jpg" alt="product image"></a>
+                                        <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/books/1.jpg" alt="product image"></a>
+                                        <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/books/2.jpg" alt="product image"></a>
                                         <div class="hot__box">
-                                            <span class="hot-label">BEST SALLER</span>
+                                            <span class="hot-label">BEST SELLER</span>
                                         </div>
                                     </div>
                                     <div class="product__content content--center">
-                                        <h4><a href="single-product.html">{{ book.book_name}}</a></h4>
+                                        <h4><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name}}</a></h4>
                                         <ul class="prize d-flex">
                                             <li>Php {{ book.price - (book.price * (book.discount/100)) }}</li>
                                             <li class="old_prize">Php {{ book.price }}</li>
                                         </ul>
-                                        <div class="action">
+                                        <div class="action mt-2">
                                             <div class="actions_inner">
                                                 <ul class="add_to_links">
-                                                    <li><a class="cart" href="cart.html"><i class="bi bi-shopping-bag4"></i></a></li>
+                                                    <li><a class="cart" href="/add-to-cart" 
+                                                        onclick="event.preventDefault();"
+                                                        v-on:click="addToCart"
+                                                    ><i class="bi bi-shopping-bag4"></i></a></li>
                                                     <li><a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link" href="#{{ book.id }}"><i class="bi bi-search"></i></a></li>
                                                 </ul>
                                             </div>
-                                        </div>
-                                        <div class="product__hover--content">
-                                            <ul class="rating d-flex">
-                                                <li class="on"><i class="fa fa-star-o"></i></li>
-                                                <li class="on"><i class="fa fa-star-o"></i></li>
-                                                <li class="on"><i class="fa fa-star-o"></i></li>
-                                                <li><i class="fa fa-star-o"></i></li>
-                                                <li><i class="fa fa-star-o"></i></li>
-                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -125,11 +102,11 @@
                             <!-- Start Single Product -->
                             <div class="list__view">
                                 <div class="thumb">
-                                    <a class="first__img" href="single-product.html"><img src="/shopper/images/product/1.jpg" alt="product images"></a>
-                                    <a class="second__img animation1" href="single-product.html"><img src="/shopper/images/product/2.jpg" alt="product images"></a>
+                                    <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/product/1.jpg" alt="product images"></a>
+                                    <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/product/2.jpg" alt="product images"></a>
                                 </div>
                                 <div class="content">
-                                    <h2><a href="single-product.html">{{ book.book_name }}</a></h2>
+                                    <h2><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name }}</a></h2>
                                     <ul class="rating d-flex">
                                         <li class="on"><i class="fa fa-star-o"></i></li>
                                         <li class="on"><i class="fa fa-star-o"></i></li>
@@ -144,7 +121,10 @@
                                     </ul>
                                     <p>{{ book.description}}</p>
                                     <ul class="cart__action d-flex">
-                                        <li class="cart"><a href="cart.html">Add to cart</a></li>
+                                        <li class="cart"><a href="/add-to-cart" 
+                                            onclick="event.preventDefault();"
+                                            v-on:click="addToCart"
+                                        >Add to cart</a></li>
                                     </ul>
 
                                 </div>
@@ -179,18 +159,6 @@
                         <!-- end product images -->
                         <div class="product-info">
                             <h1>{{ book.book_name }}</h1>
-                            <div class="rating__and__review">
-                                <ul class="rating">
-                                    <li><span class="ti-star"></span></li>
-                                    <li><span class="ti-star"></span></li>
-                                    <li><span class="ti-star"></span></li>
-                                    <li><span class="ti-star"></span></li>
-                                    <li><span class="ti-star"></span></li>
-                                </ul>
-                                <div class="review">
-                                    <a href="#">4 customer reviews</a>
-                                </div>
-                            </div>
                             <div class="price-box-3">
                                 <div class="s-price-box">
                                     <span class="new-price">Php {{ book.price - (book.price * (book.discount/100)) }}</span>
@@ -218,14 +186,16 @@
         el: '#app',
             data () {
                 return {
-                    
+                    cartItems: 0
                 }
             },
             mounted () {
                 
             },
             methods: {
-                
+                addToCart() {
+                    console.log('added')
+                }
             }
     })
   </script>

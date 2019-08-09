@@ -17,6 +17,7 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index').as('page.index')
+Route.get('/view/book/:id', 'PageController.singleItem').as('page.single-item')
 Route.get('/error', 'PageController.pageNotFound').as('page.notFound')
 
 Route.group(()=> {
@@ -44,11 +45,11 @@ Route.put('/user/:id', 'UserController.update').as('user.update').middleware('au
 
 // category
 Route.group(()=> {
-    Route.get('list', 'CategoryController.index')
-    Route.get(':id', 'CategoryController.show')
-    Route.delete(':id', 'CategoryController.destroy')
-    Route.post('store', 'CategoryController.store')
-    Route.put(':id', 'CategoryController.update')
+    Route.get('list', 'CategoryController.index').as('category.list')
+    Route.get(':id', 'CategoryController.show').as('category.show')
+    Route.delete(':id', 'CategoryController.destroy').as('category.destroy')
+    Route.post('store', 'CategoryController.store').as('category.store')
+    Route.put(':id', 'CategoryController.update').as('category.update')
 }).prefix('category')
 
 // books
@@ -62,20 +63,20 @@ Route.group(()=> {
 
 // orders
 Route.group(()=> {
-    Route.get('list', 'OrderController.index')
-    Route.get(':id', 'OrderController.show')
-    Route.delete(':id', 'OrderController.destroy')
-    Route.post('store', 'OrderController.store')
-    Route.put(':id', 'OrderController.update')
+    Route.get('list', 'OrderController.index').as('order.list')
+    Route.get(':id', 'OrderController.show').as('order.show')
+    Route.delete(':id', 'OrderController.destroy').as('order.destroy')
+    Route.post('store', 'OrderController.store').as('order.store')
+    Route.put(':id', 'OrderController.update').as('order.update')
 }).prefix('order')
 
 // cart 
 Route.group(()=> {
-    Route.get('list', 'CartController.index')
-    Route.get(':id', 'CartController.show')
-    Route.delete(':id', 'CartController.destroy')
-    Route.post('store', 'CartController.store')
-    Route.put(':id', 'CartController.update')
+    Route.get('list', 'CartController.index').as('cart.index')
+    Route.get(':id', 'CartController.show').as('cart.show')
+    Route.delete(':id', 'CartController.destroy').as('cart.destroy')
+    Route.post('store', 'CartController.store').as('cart.store')
+    Route.put(':id', 'CartController.update').as('cart.update')
 }).prefix('cart')
 
 // management

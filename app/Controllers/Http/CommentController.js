@@ -32,7 +32,7 @@ class CommentController {
         });
     }
 
-    async store ({ request, response }) {
+    async store ({ request, response, auth }) {
         const rules = {
             comment: 'required'
         }
@@ -50,15 +50,17 @@ class CommentController {
             });
         }
 
-        const { book_id, user_id, comment } = request.only([
+        const { book_id, comment } = request.only([
             'book_id',
-            'user_id',
             'comment'
         ])
 
+        const user_id = auth.user.id
+        const name = auth.user.firstname
         const comment = await Comments.create({ 
             book_id, 
             user_id, 
+            name,
             comment 
         })
 

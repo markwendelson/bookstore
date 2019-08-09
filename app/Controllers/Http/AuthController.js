@@ -68,7 +68,7 @@ class AuthController {
             'password'
         ])
 
-        await User.create({
+        const user = await User.create({
             firstname,
             middlename,
             lastname,
@@ -77,10 +77,19 @@ class AuthController {
             password
         })
 
-        return response.json({
-            message: 'Registration successful',
-            status: 'success',
-        });
+        if (user) {
+            return response.json({
+                message: 'Registration successful',
+                status: 'success',
+                data: user
+            });
+        } else {
+            return response.json({
+                message: 'Registration not successful',
+                status: 'error',
+                data: user
+            });
+        }
     }
 
     async login ({ request, response, session, auth }) {

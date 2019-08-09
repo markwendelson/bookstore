@@ -2472,8 +2472,7 @@ nav.menu {
 	.product:hover .product__content .action{opacity:1;visibility:visible;}
 	.product:hover .product__hover--content{opacity:1;visibility:visible;display:block;}
       .product .product__content .action .actions_inner .add_to_links li {
-        margin-bottom: 4px;
-		display:inline-block
+        display:inline-block
 		}
         .product .product__content .action .actions_inner .add_to_links li a {
           border: 0 none;

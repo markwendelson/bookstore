@@ -110,7 +110,7 @@ class UserController {
     }
 
     async userCheckout ({ request, view, auth, response }) {
-        // const order = request.collect(['order_no'])
+        const order = request.collect(['order_no'])
         // return response.json(order)
         let orders = await Orders.query().with('book').where('user_id',auth.user.id).fetch()
         orders = orders.toJSON()
