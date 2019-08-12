@@ -70,7 +70,7 @@
                                                 <ul class="add_to_links">
                                                     <li><a class="cart" href="/add-to-cart" 
                                                         onclick="event.preventDefault();"
-                                                        v-on:click="addToCart"
+                                                        v-on:click="addToCart({{ book.id }})"
                                                     ><i class="bi bi-shopping-bag4"></i></a></li>
                                                     <li><a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link" href="#{{ book.id }}"><i class="bi bi-search"></i></a></li>
                                                 </ul>
@@ -123,7 +123,7 @@
                                     <ul class="cart__action d-flex">
                                         <li class="cart"><a href="/add-to-cart" 
                                             onclick="event.preventDefault();"
-                                            v-on:click="addToCart"
+                                            v-on:click="addToCart({{ book.id }})"
                                         >Add to cart</a></li>
                                     </ul>
 
@@ -169,7 +169,10 @@
                                 {{ book.description }}
                             </div>
                             <div class="addtocart-btn">
-                                <a href="#">Add to cart</a>
+                                <a href="/add-to-cart" 
+                                onclick="event.preventDefault();"
+                                v-on:click="addToCart({{ book.id }})"
+                                >Add to cart</a>
                             </div>
                         </div>
                     </div>
@@ -193,8 +196,29 @@
                 
             },
             methods: {
-                addToCart() {
-                    console.log('added')
+                addToCart(bookId) {
+                    axios.post('{{ route('cart.store') }}', {
+                        book_id:bookId,
+                        quantity: 1
+                    })
+                    .then( function(response){
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully added to cart.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('page.index') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to add to cart.',
+                                response.data.status,
+                            )
+                        }
+                    })
                 }
             }
     })

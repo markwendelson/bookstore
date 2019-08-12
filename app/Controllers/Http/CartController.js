@@ -32,10 +32,9 @@ class CartController {
         });
     }
 
-    async store ({ request, response, session }) {
+    async store ({ request, response, session, auth }) {
         const rules = {
             book_id: 'required',
-            user_id: 'required',
             quantity: 'required'
         }
 
@@ -47,16 +46,17 @@ class CartController {
       
             return response.json({
                 message: validation.messages(),
-                status: 200,
+                status: 'error',
                 data: null
             });
         }
 
-        const { book_id, user_id, quantity } = request.only([
+        const { book_id, quantity } = request.only([
             'book_id',
-            'user_id',
             'quantity'
         ])
+
+        const user_id = auth.user.id
 
         const cart = await Cart.create({ 
             book_id, 
@@ -65,20 +65,20 @@ class CartController {
         })
 
         return response.json({
-            message: "cart added",
-            status: 201,
+            message: "Book added to cart",
+            status: 'success',
             data: cart
         });
     }
 
-    async destroy ({ params, request, response }) {
+    async destroy ({ params, response }) {
         const cart = await Cart.find(params.id)
         
         await cart.delete()
 
         return response.json({
-            message: "cart deleted",
-            status: 204,
+            message: "Book deleted from cart",
+            status: 'success',
             data: null
         });
     }

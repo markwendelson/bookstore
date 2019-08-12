@@ -140,7 +140,6 @@
 @endsection
 
 @section('extra_scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script type="text/javascript">
     new Vue({
         el: '#book-form',
@@ -231,41 +230,44 @@
                 },
                 saveBook() {
                     var app = this
-                    axios.post('book/store',{
-                        book_name: app.book_name,
-                        description: app.description,
-                        author: app.author,
-                        category_id: app.category,
-                        price: app.price,
-                        discount: app.discount,
-                        quantity: app.quantity,
-                        image: app.image,
-                    })
-                    .then(function(response){
-                        if (response.data.status == 'success') {
-                            Swal.fire(
-                                response.data.message,
-                                'Successfully added.',
-                                response.data.status,
-                            ).then(function(){
-                                window.location = '{{ route('user.books') }}'
-                            })
-                        }
-                        else if(response.data.status == 'error') {
-                            Swal.fire(
-                                response.data.message,
-                                'Failed to add book.',
-                                response.data.status,
-                            )
-                        }
-                    })
-                    .catch(function (response) {
-                        Swal.fire(
-                            response.message,
-                            'Failed to add book.',
-                            response.message,
-                        )
-                    })
+                    console.log('book save')
+                    // axios.post('{{ route('book.store') }}',{
+                    //     book_name: app.book_name,
+                    //     description: app.description,
+                    //     author: app.author,
+                    //     category_id: app.category,
+                    //     price: app.price,
+                    //     discount: app.discount,
+                    //     quantity: app.quantity,
+                    //     image: app.image,
+                    // })
+                    // .then(function(response){
+                    //     console.log(response)
+                        // if (response.data.status == 'success') {
+                        //     Swal.fire(
+                        //         response.data.message,
+                        //         'Successfully added.',
+                        //         response.data.status,
+                        //     ).then(function(){
+                        //         window.location = '{{ route('user.books') }}'
+                        //     })
+                        // }
+                        // else if(response.data.status == 'error') {
+                        //     Swal.fire(
+                        //         response.data.message,
+                        //         'Failed to add book.',
+                        //         response.data.status,
+                        //     )
+                        // }
+                    // })
+                    // .catch(function (response) {
+                    //     console.log(response)
+                    //     // Swal.fire(
+                    //     //     response.message,
+                    //     //     'Failed to add book.',
+                    //     //     response.message,
+                    //     // )
+                    // })
                 },
                 updateBook() {
                     var app = this

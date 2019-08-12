@@ -3231,7 +3231,7 @@ module.exports = keys;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.14';
+  var VERSION = '4.17.13';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -44276,12 +44276,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.Validator = vee_validate__WEBPACK_IMPORTED_MODULE_1__["default"].Validator;
-window.Validator.extend('credit_card_type', function (value) {
-  var validCardBrands = ['visa', 'mastercard'];
-  var valid = window.cardValidator.number(value);
-  var type = valid.card ? valid.card.type : '';
-  return lodash_includes__WEBPACK_IMPORTED_MODULE_2___default()(validCardBrands, type);
-});
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MODULE_1__["default"], {
   events: 'input|blur'
 });
@@ -44295,8 +44289,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MO
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/wendel/Sites/bookstore/vue/app.js */"./vue/app.js");
-module.exports = __webpack_require__(/*! /Users/wendel/Sites/bookstore/resources/assets/sass/app.scss */"./resources/assets/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\bookstore\vue\app.js */"./vue/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\bookstore\resources\assets\sass\app.scss */"./resources/assets/sass/app.scss");
 
 
 /***/ })

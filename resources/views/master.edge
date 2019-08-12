@@ -29,23 +29,65 @@
 	<script src="/shopper/js/vendor/modernizr-3.5.0.min.js"></script>
 </head>
 <body>
-  <div class="wrapper" id="wrapper">
-    <section>
+	<div class="wrapper">
+		<section>
 			@include('includes.header')
 			@section('extra_css')
 			@endsection
-    </section>
-    @section('content')
-    @endsection
-    <section>
-      @include('includes.footer')
-    </section>
-  </div>
-  <script src="/shopper/js/vendor/jquery-3.2.1.min.js"></script>
+		</section>
+		@section('content')
+		@endsection
+		<section>
+		@include('includes.footer')
+		</section>
+	</div>
+  	<script src="/shopper/js/vendor/jquery-3.2.1.min.js"></script>
 	<script src="/shopper/js/popper.min.js"></script>
 	<script src="/shopper/js/bootstrap.min.js"></script>
 	<script src="/shopper/js/plugins.js"></script>
 	<script src="/shopper/js/active.js"></script>
+	<script src="/js/sweetalert2@8.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	new Vue({
+		el: '#cart',
+			data () {
+				return {
+					cartItems: 0
+				}
+			},
+			mounted () {
+				
+			},
+			methods: {
+				removeToCart(cartId) {
+					console.log(cartId)
+					axios.delete('{{ route('cart.destroy', {id:'+ cartId +'}) }}')
+					.then( function(response){
+						if (response.data.status == 'success') {
+							Swal.fire(
+								response.data.message,
+								'Successfully deleted to cart.',
+								response.data.status,
+							).then(function(){
+								window.location = '{{ route('page.index') }}'
+							})
+						}
+						else if(response.data.status == 'error') {
+							Swal.fire(
+								response.data.message,
+								'Failed to delete to cart.',
+								response.data.status,
+							)
+						}
+					})
+				}
+			}
+		})
+
+		function test(){
+			console.log('test')
+		}
+		</script>
 	{{ script(versionjs('app')) }}
 	@section('extra_scripts')
 	@endsection
