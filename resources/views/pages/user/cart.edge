@@ -18,7 +18,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(!cart.length)
+                                @if(!myCart.length)
                                     <tr>
                                         <td class="product-name" colspan="6"><strong>Cart is empty</strong></td>
                                     </tr>
@@ -124,22 +124,55 @@
                         )
                 },
                 removeItem(item) {
-                    var app = this
+                    Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    })
+                    .then((result) => {
+                        if (result.value) {
+                            var app = this
 
-                    for( var i = 0; i < app.myCart.length; i++){ 
-                        if ( app.myCart[i].id === item) {
-                            app.myCart.splice(i, 1); 
-                            i--;
+                            for( var i = 0; i < app.myCart.length; i++){ 
+                                if ( app.myCart[i].id === item) {
+                                    app.myCart.splice(i, 1); 
+                                    i--;
+                                }
+                            }
+
+                            axios.delete('cart/'+ item)
+                            .then(function(response){
+                                if (response.data.status == 'success') {
+                                    Swal.fire(
+                                        response.data.message,
+                                        'Successfully delete.',
+                                        response.data.status,
+                                    ).then(function(){
+                                        document.getElementById("cartItemCount").innerText = app.myCart.length
+                                    })
+                                }
+                                else if(response.data.status == 'error') {
+                                    Swal.fire(
+                                        response.data.message,
+                                        'Failed to delete book.',
+                                        response.data.status,
+                                    )
+                                }
+                            })
+                            .catch(function (response) {
+                                Swal.fire(
+                                    response.message,
+                                    'Failed to delete account.',
+                                    response.message,
+                                )
+                            })
                         }
-                    }
-                    console.log(item)
+                    })
                     
-                    // Show alert box
-                    Swal.fire(
-                        'Deleted',
-                        'Book has been deleted.',
-                        'success'
-                        )
                 },
                 submitCart() {
                     var app = this
@@ -171,11 +204,11 @@
                     }
 
                     Swal.fire(
-                        'Saved',
+                        'Successfuly ordered',
                         'Book(s) has been ordered.',
                         'success',
-                        ).then(function (e){
-                            console.log('redirect now')
+                        ).then(function(){
+                            window.location = '/account/orders/'+order_no
                         })
                 }
             }

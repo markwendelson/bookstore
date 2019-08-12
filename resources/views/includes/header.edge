@@ -14,7 +14,7 @@
                 <ul class="header__sidebar__right d-flex justify-content-end align-items-center">
                     <li class="shop_search"><a class="search__active" href="#"></a></li>
                     @loggedIn
-                    <li class="shopcart"><a class="cartbox_active" href="#"><span class="product_qun">{{ cart.length }}</span></a>
+                    <li class="shopcart"><a class="cartbox_active" href="#"><span id="cartItemCount" class="product_qun">{{ cart.length }}</span></a>
                     @endloggedIn
                         <!-- Start Shopping Cart -->
                         <div class="block-minicart minicart__active">
@@ -30,9 +30,9 @@
                                     <span>Php </span>
                                 </div>
                                 <div class="mini_action checkout">
-                                    <a class="checkout__btn" href="cart.html">Go to Checkout</a>
+                                    <a class="checkout__btn" href="{{ route('user.cart') }}">Go to Checkout</a>
                                 </div>
-                                <div id="cart" class="single__items">
+                                <div id="header-cart" class="single__items">
                                     @if(!cart.length)
                                     <p>Cart is empty!</p>
                                     @endif
@@ -61,7 +61,7 @@
                                     @endeach
                                 </div>
                                 <div class="mini_action cart">
-                                    <a class="cart__btn" href="cart.html">View and edit cart</a>
+                                    <a class="cart__btn" href="{{ route('user.cart') }}">View and edit cart</a>
                                 </div>
                             </div>
                         </div>
@@ -80,6 +80,7 @@
                                                 @loggedIn
                                                 <span><a href="{{ route('user.account') }}">My Account</a></span>
                                                 <span><a href="{{ route('user.books') }}">My Books</a></span>
+                                                <span><a href="{{ route('user.order') }}">My Orders</a></span>
                                                 <span><a href="{{ route('auth.changepassword') }}">Change Password</a></span>
                                                 <span><a href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
                                                 <form id="logout-form" action="{{ route('auth.logout') }}" method="post" style="display: none;">

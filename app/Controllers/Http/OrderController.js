@@ -129,6 +129,28 @@ class OrderController {
         });
     
     }
+
+    async getOrderCode ({ params, auth, view, response })
+    {
+        let order_no = params.orderCode
+        let orders = await Orders.query().with('book').where('user_id',auth.user.id).where('order_no',params.orderCode).fetch()
+        
+        orders = orders.toJSON()
+    
+        let total = orders.reduce(function (sum, ord) {
+            return sum + (ord.quantity * ord.price) ;
+        }, 0);
+        
+        if (orders.length == 0)
+        {
+            return view.render('pages.error404')
+        }
+        else
+        {
+            return view.render('pages.user.checkout', { order_no, orders, total })
+        }
+
+    }
 }
 
 module.exports = OrderController

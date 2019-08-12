@@ -39,6 +39,9 @@ class ExceptionHandler extends BaseExceptionHandler {
     else if(error.code == 'E_ROUTE_NOT_FOUND') {
       return response.route('page.notFound')
     }
+    else if(error.code =='E_MISSING_DATABASE_ROW') {
+      return response.route('page.notFound')
+    }
     else {
       response.status(error.status).send(error.message)
     }

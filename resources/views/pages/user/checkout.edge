@@ -1,23 +1,25 @@
 @layout('master')
 @section('content')
   
-<div class="col-lg-6 col-12 md-mt-40 sm-mt-40 pt--100">
+<div id="order-details" class="col-lg-6 col-12 md-mt-40 sm-mt-40 pt--100">
     <div class="wn__order__box w-100">
         <h3 class="onder__title">Your order</h3>
         <ul class="order__total onder__title">
-            <li>Order No.</li>
-            <li>{{ order_number }}</li>
+        <li>Order No. </li>
+            <li>{{ order_no }}</li>
         </ul>
         <h3 class="onder__title"></h3>
         <ul class="order__total">
             <li>Product</li>
             <li>Total</li>
         </ul>
-        <ul class="order_product">
-            <li>Buscipit at magna × 1<span>$48.00</span></li>
-        </ul>
+        @each(item in orders)
+            <ul class="order_product">
+                <li>{{ item.book.book_name }} × {{ item.quantity}}<span>Php {{ item.price }}</span></li>
+            </ul>
+        @endeach
         <ul class="total__amount">
-            <li>Order Total <span>$223.00</span></li>
+            <li>Order Total <span>Php {{ total }}</span></li>
         </ul>
     </div>
     <div id="accordion" class="checkout_accordion mt--30" role="tablist">
@@ -28,7 +30,7 @@
                   </a>
             </div>
             <div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="payment-body">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</div>
+                <div class="payment-body">Make your payment directly into our bank account. Please use your Order Number as the payment reference and send a copy of your deposit slip to us. Your order won’t be shipped until the funds have cleared in our account.</div>
             </div>
         </div>
     </div>

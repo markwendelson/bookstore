@@ -10,6 +10,7 @@
                         <thead>
                             <tr class="title-top">
                                 <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Order No</th>
                                 <th class="product-name">Product</th>
                                 <th class="product-price">Price</th>
                                 <th class="product-quantity">Quantity</th>
@@ -25,6 +26,7 @@
                             @each(item in orders)
                             <tr>
                                 <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
+                                <td class="product-name"><a href="/account/orders/{{item.order_no}}">{{ item.order_no }}</a></td>
                                 <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
