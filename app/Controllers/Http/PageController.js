@@ -10,7 +10,17 @@ class PageController {
         const perPage = 10
         let categories = await Category.query().with('book').fetch()
         let books = await Books.query().paginate(currentPage,perPage)
-        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+
+        let user_id = 0;
+        if(auth == null)
+        {
+            user_id = auth.user.id
+        }
+        else
+        {
+            user_id = 0
+        }
+        let cart = await Cart.query().with('book').where('user_id',user_id).fetch()
         books = books.toJSON()
         categories = categories.toJSON()
         cart = cart.toJSON()
