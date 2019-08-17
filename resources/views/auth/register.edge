@@ -63,6 +63,9 @@
                             >
                                 Register
                             </a>
+                            <ul>
+                                <li v-for="error in errors.all()">{{ error }}</li>
+                              </ul>
                         </div>
                     </div>
                 </div>
@@ -73,7 +76,6 @@
 @endsection
 
 @section('extra_scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script type="text/javascript">
     const error_msg = {
         custom: {
@@ -96,7 +98,8 @@
                     lastname: '',
                     contact_no: '',
                     email: '',
-                    password: ''
+                    password: '',
+                    _errors: null,
                 }
             },
             mounted () {
@@ -119,7 +122,6 @@
                 },
                 register() {
                     var app = this
-                    console.log(app)
                     axios.post('{{route ('auth.register')}}',{
                         firstname: app.firstname,
                         middlename: app.middlename,
@@ -129,19 +131,54 @@
                         password: app.password,
                     })
                     .then(function (response) {
-                        Swal.fire(
-                            response.status,
-                            'Account has been created.',
-                            response.message,
-                        )
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Account has been created.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('page.index') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            var msg = ''
+                            app._errors = response.data.message
+                            response.data.message.forEach(messages => {
+                                msg = messages.message
+                                if(messages.field == 'email' && messages.validation == 'unique'){
+                                    msg = 'The email address is already registered.'
+                                }
+                            });
+                            
+                            Swal.fire(
+                                msg,
+                                'Failed to create an account',
+                                response.data.status,
+                            ).then(function(){
+                                app.showErrors()
+                            })
+                        }
                     })
                     .catch(function (response) {
                         Swal.fire(
-                            response.message,
-                            'Account not created.',
-                            response.message,
+                            'Error',
+                            'Failed to create an account.',
+                            'error',
                         )
                     })
+                }, 
+                showErrors() {
+                    console.log(this._errors)
+                    this._errors.forEach(message => {
+                        var msg = message.message
+                        if(message.field == 'email' && message.validation == 'unique'){
+                            msg = 'The email address is already registered.'
+                        }
+                        this.$validator.errors.add({
+                            field:message.field,
+                            msg:msg
+                        })
+                    });
                 }
             }
     })

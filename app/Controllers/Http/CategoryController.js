@@ -32,7 +32,7 @@ class CategoryController {
         });
     }
 
-    async store ({ request, response }) {
+    async store ({ request, response, session }) {
         const rules = {
             category: 'required'
         }
@@ -55,8 +55,8 @@ class CategoryController {
         const cat = await Category.create({ category })
 
         return response.json({
-            message: "category added",
-            status: 201,
+            message: "New category added successfully.",
+            status: 'success',
             data: cat
         });
     }
@@ -67,13 +67,13 @@ class CategoryController {
         await cat.delete()
 
         return response.json({
-            message: "category deleted",
+            message: "Category deleted",
             status: 204,
             data: null
         });
     }
 
-    async update ({ params, request, response }) {
+    async update ({ params, request, response, session }) {
         const cat = await Category.find(params.id)
        
         if (!cat) {
@@ -104,11 +104,18 @@ class CategoryController {
         await cat.save()
 
         return response.json({
-            message: "category updated",
-            status: 200,
+            message: "Category updated successfully.",
+            status: 'success',
             data: cat
         });
     
+    }
+
+    async management ({ view, auth, response }) {
+        let categories = await Category.all()
+        categories = categories.toJSON()
+
+        return view.render('management.category', { categories })
     }
 }
 

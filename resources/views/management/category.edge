@@ -11,18 +11,17 @@
 @endsection
 @section('content')
 <section class="cart-main-area section-padding--lg mt-5 bg--white">
-    <div id="book-form" class="container">
+    <div id="category-form" class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12 ol-lg-12">
                 <div class="row">
                     <div class="col-lg-6 col-12">
-                        <h3 class="account__title">Book Categories ()</h3>
+                        <h3 class="account__title">Categories ({{categories.length}})</h3>
                     </div>
                     <div class="col-lg-6 col-12">
                         <div class="account__form pt-0 pl-0 pb-0 pr-0 mb-1 mt-0 pull-right">
                             <div class="form__btn">
-                                <a href="/book/add" onclick="event.preventDefault();" v-on:click="addModal">Add Book</a>
-                                {{--  <a href="{{ route('category.list') }}">View Book Categories</a>  --}}
+                                <a href="/category/add" onclick="event.preventDefault();" v-on:click="addModal">Add Category</a>
                             </div>
                         </div>
                     </div>
@@ -43,8 +42,11 @@
                             @endif
                             @each(item in categories)
                             <tr>
-                                <td class="product-name">{{ item.category.category || ''}}</td>
-                                <td class="product-name"><a href="{{ route('book.show', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="editModal({{ item.id }})">Edit</a> <a href="{{ route('book.delete', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="deleteBook({{ item.id }})">Remove</a></td>
+                                <td class="product-name">{{ item.category }}</td>
+                                <td class="product-name">
+                                    <a href="{{ route('category.show', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="editModal({{ item.id }})">Edit</a>
+                                    <a href="{{ route('category.delete', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="deleteCategory({{ item.id }})">Remove</a>
+                                </td>
                             </tr>
                             @endeach
                         </tbody>
@@ -56,67 +58,21 @@
         <!-- Start Book form Popup -->
         <div id="modal-form" class="box-search-content bookForm_active block-bg close__top modal-form">
             <div class="pull-left" style="top:35px;left:90px;font-size:large;position:relative">
-                <h2 class="contact__title modal-title">@{{ state === 'add' ? 'Add New Book' : 'Edit Book' }}</h2>
+                <h2 class="contact__title modal-title">@{{ state === 'add' ? 'Add New Category' : 'Edit Category' }}</h2>
             </div>
             <div class="col-lg-12 col-12" style="margin-top:90px;background: white;padding-top:20px;padding-bottom:50px">
                 <div class="contact-form-wrap">
-                        <div class="single-contact-form space-between">
-                            <div class="row col-lg-12">
-                                <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Name</label>
-                                    <input type="text" name="book_name" v-model="book_name" placeholder="Book Name*">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Author</label>
-                                    <input type="text" name="author" v-model="author" placeholder="Book Author*">
-                                </div>
+                    <div class="single-contact-form space-between">
+                        <div class="row col-lg-12">
+                            <div class="col-md-6">
+                                <label class="pull-left ml-2">Category Name</label>
+                                <input type="text" name="category" v-model="category" placeholder="Category Name*">
                             </div>
                         </div>
-                        <div class="single-contact-form space-between">
-                            <div class="row col-lg-12">
-                                <div class="col-md-12">
-                                    <label class="pull-left ml-2">Book Description</label>
-                                    <textarea class="ml-2" name="description" v-model="description" placeholder="Type your book description here.."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single-contact-form space-between">
-                            <div class="row col-lg-12">
-                                <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Category</label>
-                                    <div class="row col-lg-12">
-                                        <div class="col-lg-12 col-md-12">
-                                            <select id="category" v-model="category" style="
-                                            font-size: 1rem;
-                                            width: 100%;">
-                                            @each(cat in categories)
-                                                <option value="{{ cat.id }}">{{ cat.category }}</option>
-                                            @endeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Quantity</label>
-                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single-contact-form space-between">
-                                <div class="row col-lg-12">
-                                    <div class="col-md-6">
-                                        <label class="pull-left ml-2">Book Price</label>
-                                        <input type="text" name="price" v-model="price" placeholder="Book Price">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="pull-left ml-2">Book Discount</label>
-                                        <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="addtocart-btn pull-right mr-5 mt-0">
-                        <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveCategory' : 'updateCategory' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
-                        </div>
+                    </div>
+                    <div class="addtocart-btn pull-right mr-5 mt-0">
+                        <a href="{{ route('category.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveCategory' : 'updateCategory' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
+                    </div>
                 </div> 
             </div>
             <div class="close__wrap" v-on:click="closeModal">
@@ -130,21 +86,13 @@
 @endsection
 
 @section('extra_scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 <script type="text/javascript">
     new Vue({
-        el: '#book-form',
+        el: '#category-form',
             data () {
                 return {
                     id: '{{ id }}',
-                    book_name: '{{ book_name }}',
-                    description: '{{ description }}',
-                    author: '{{ author }}',
                     category: '{{ category }}',
-                    price: '{{ price }}',
-                    discount: '{{ discount }}',
-                    quantity: '{{ quantity }}',
-                    image: '{{ image }}',
                     state: null,
                 }
             },
@@ -152,7 +100,7 @@
                 
             },
             methods: {
-                deleteBook(id) {
+                deleteCategory(id) {
                     console.log('deleting ' +id)
                     Swal.fire({
                     title: 'Are you sure?',
@@ -166,7 +114,7 @@
                     .then((result) => {
                         // Send request to the server
                         if (result.value) {
-                            axios.delete('book/'+ id)
+                            axios.delete('category/'+ id)
                             .then(function(response){
                                 if (response.data.status == 'success') {
                                     Swal.fire(
@@ -174,7 +122,7 @@
                                         'Successfully delete.',
                                         response.data.status,
                                     ).then(function(){
-                                        window.location = '{{ route('management.category') }}'
+                                        window.location = '{{ route('management.category ') }}'
                                     })
                                 }
                                 else if(response.data.status == 'error') {
@@ -205,15 +153,9 @@
                     var app = this
                     axios.get('category/' +id)
                     .then(function(response){
+                        console.log(response)
                         app.id = id
-                        app.book_name = response.data.data.book.book_name
-                        app.description = response.data.data.book.description
-                        app.author = response.data.data.book.author
-                        app.category = response.data.data.book.category_id
-                        app.price = response.data.data.book.price
-                        app.discount = response.data.data.book.discount
-                        app.quantity = response.data.data.book.quantity
-                        app.image = response.data.data.book.image
+                        app.category = response.data.data.category
                     })
                     app.state = 'edit';
                     $('.bookForm_active').toggleClass('is-visible');
@@ -221,8 +163,9 @@
                 },
                 saveCategory() {
                     var app = this
+                    console.log('category save')
                     axios.post('category/store',{
-                        name: app.name,
+                        category: app.category,
                     })
                     .then(function(response){
                         if (response.data.status == 'success') {
@@ -237,7 +180,7 @@
                         else if(response.data.status == 'error') {
                             Swal.fire(
                                 response.data.message,
-                                'Failed to add book.',
+                                'Failed to add category.',
                                 response.data.status,
                             )
                         }
@@ -245,15 +188,16 @@
                     .catch(function (response) {
                         Swal.fire(
                             response.message,
-                            'Failed to add book.',
+                            'Failed to add category.',
                             response.message,
                         )
                     })
                 },
                 updateCategory() {
                     var app = this
+                    console.log('category update')
                     axios.put('category/'+ app.id,{
-                        name: app.name,
+                        category: app.category,
                     })
                     .then(function(response){
                         if (response.data.status == 'success') {
@@ -268,7 +212,7 @@
                         else if(response.data.status == 'error') {
                             Swal.fire(
                                 response.data.message,
-                                'Failed to update book.',
+                                'Failed to update category.',
                                 response.data.status,
                             )
                         }
@@ -276,7 +220,7 @@
                     .catch(function (response) {
                         Swal.fire(
                             response.message,
-                            'Failed to update book.',
+                            'Failed to update category.',
                             response.message,
                         )
                     })

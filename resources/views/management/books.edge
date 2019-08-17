@@ -43,7 +43,7 @@
                         <tbody>
                             @if(!books.length)
                                 <tr>
-                                    <td class="product-name" colspan="6"><strong>No book(s) found.</strong></td>
+                                    <td class="product-name" colspan="7"><strong>No book(s) found.</strong></td>
                                 </tr>
                             @endif
                             @each(item in books)
@@ -113,19 +113,19 @@
                             </div>
                         </div>
                         <div class="single-contact-form space-between">
-                                <div class="row col-lg-12">
-                                    <div class="col-md-6">
-                                        <label class="pull-left ml-2">Book Price</label>
-                                        <input type="text" name="price" v-model="price" placeholder="Book Price">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="pull-left ml-2">Book Discount</label>
-                                        <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
-                                    </div>
+                            <div class="row col-lg-12">
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Price</label>
+                                    <input type="text" name="price" v-model="price" placeholder="Book Price">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Discount</label>
+                                    <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
                                 </div>
                             </div>
+                        </div>
                         <div class="addtocart-btn pull-right mr-5 mt-0">
-                        <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveBook' : 'updateBook' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
+                            <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveBook' : 'updateBook' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
                         </div>
                 </div> 
             </div>

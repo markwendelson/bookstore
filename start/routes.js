@@ -48,7 +48,7 @@ Route.put('/user/:id', 'UserController.update').as('user.update').middleware('au
 Route.group(()=> {
     Route.get('list', 'CategoryController.index').as('category.list')
     Route.get(':id', 'CategoryController.show').as('category.show')
-    Route.delete(':id', 'CategoryController.destroy').as('category.destroy')
+    Route.delete(':id', 'CategoryController.destroy').as('category.delete')
     Route.post('store', 'CategoryController.store').as('category.store')
     Route.put(':id', 'CategoryController.update').as('category.update')
 }).prefix('category')
@@ -66,7 +66,7 @@ Route.group(()=> {
 Route.group(()=> {
     Route.get('list', 'OrderController.index').as('order.list')
     Route.get(':id', 'OrderController.show').as('order.show')
-    Route.delete(':id', 'OrderController.destroy').as('order.destroy')
+    Route.delete(':id', 'OrderController.destroy').as('order.delete')
     Route.post('store', 'OrderController.store').as('order.store')
     Route.put(':id', 'OrderController.update').as('order.update')
 }).prefix('order')
@@ -82,8 +82,8 @@ Route.group(()=> {
 
 // management
 Route.group(()=> {
-    Route.on('/category').render('management.category')
-    Route.on('/books').render('management.books')
-    Route.on('/users').render('management.users')
+    Route.get('category', 'CategoryController.management').as('management.category')
+    Route.on('books').render('management.books')
+    Route.on('users').render('management.users')
 }).prefix('management')
 
