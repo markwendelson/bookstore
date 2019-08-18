@@ -3,6 +3,8 @@
 const { validate } = use('Validator')
 const Books = use('App/Models/Book')
 const Comments = use('App/Models/Comment')
+const Category = use('App/Models/Category')
+const Helpers = use('Helpers')
 
 class BookController {
     async index({ response }){
@@ -48,6 +50,16 @@ class BookController {
             quantity: 'required'
         }
 
+        let imageFile = request.file('image', {
+            types: ['image'],
+            size: '5mb'
+          })
+          
+        var imageFileName = `${new Date().getTime()}.${imageFile.subtype}`
+        imageFile =  await imageFile.move(Helpers.publicPath('uploads'), {
+            name: imageFileName
+        })
+
         const validation = await validate(request.all(), rules)
 
         if (validation.fails()) {
@@ -61,7 +73,7 @@ class BookController {
             });
         }
   
-        const { book_name, description, author, category_id, price, quantity, discount, image } = request.only([
+        const { book_name, description, author, category_id, price, quantity, discount } = request.only([
             'book_name',
             'description',
             'author',
@@ -69,9 +81,10 @@ class BookController {
             'price',
             'quantity',
             'discount',
-            'image'
         ])
         
+        var image = imageFileName
+
         var created_by = auth.user.id
 
         const book = await Books.create({ 
@@ -159,6 +172,26 @@ class BookController {
         });
     }
 
+    async management ({ view, response }) {
+        let books = await Books.query().with('category').with('user').fetch()
+        books = books.toJSON()
+
+        let categories = await Category.all()
+        categories = categories.toJSON()
+
+        return view.render('management.books', { books, categories })
+    }
+
+    async search ({ request, view }) {
+        const filter_val = request.get('q')["q"]
+        let books = await Books.query()
+                                .where('book_name','LIKE','%'+filter_val+'%')
+                                .fetch()
+        
+        books = books.toJSON()
+
+        return view.render('management.books', { books })
+    }
 }
 
 module.exports = BookController

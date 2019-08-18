@@ -14,7 +14,9 @@
                 <ul class="header__sidebar__right d-flex justify-content-end align-items-center">
                     <li class="shop_search"><a class="search__active" href="#"></a></li>
                     @loggedIn
-                    <li class="shopcart"><a class="cartbox_active" href="#"><span id="cartItemCount" class="product_qun">{{ cart.length }}</span></a>
+                        @if(!auth.user.is_admin)
+                            <li class="shopcart"><a class="cartbox_active" href="#"><span id="cartItemCount" class="product_qun">{{ cart.length }}</span></a>
+                        @endif
                     @endloggedIn
                         <!-- Start Shopping Cart -->
                         <div class="block-minicart minicart__active">
@@ -79,8 +81,10 @@
                                             <div class="setting__menu">
                                                 @loggedIn
                                                 <span><a href="{{ route('user.account') }}">My Account</a></span>
-                                                <span><a href="{{ route('user.books') }}">My Books</a></span>
-                                                <span><a href="{{ route('user.order') }}">My Orders</a></span>
+                                                @if(!auth.user.is_admin)
+                                                    <span><a href="{{ route('user.books') }}">My Books</a></span>
+                                                    <span><a href="{{ route('user.order') }}">My Orders</a></span>
+                                                @endif
                                                 <span><a href="{{ route('auth.changepassword') }}">Change Password</a></span>
                                                 <span><a href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
                                                 <form id="logout-form" action="{{ route('auth.logout') }}" method="post" style="display: none;">
@@ -93,6 +97,17 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @if(auth.user.is_admin)
+                                        <strong class="label switcher-label">
+                                            <span><a href="{{ route('management.books') }}">Books</a></span>
+                                        </strong>
+                                        <strong class="label switcher-label">
+                                            <span><a href="{{ route('management.category') }}">Category</a></span>
+                                        </strong>
+                                        <strong class="label switcher-label">
+                                            <span><a href="{{ route('management.users') }}">Users</a></span>
+                                        </strong>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -108,9 +123,9 @@
 <div class="box-search-content search_active block-bg close__top">
     <form id="search_mini_form" class="minisearch" action="#">
         <div class="field__search">
-            <input type="text" placeholder="Search entire store here...">
+            <input type="text" placeholder="Search entire store here..." id="storeSearch">
             <div class="action">
-                <a href="#"><i class="zmdi zmdi-search"></i></a>
+                <a href="/search" onclick="event.preventDefault();storeSearch();"><i class="zmdi zmdi-search"></i></a>
             </div>
         </div>
     </form>

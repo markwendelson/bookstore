@@ -2,3 +2,15 @@
   border-right: 1px;
 }
 
+.input-prepend {
+  display: flex;
+}
+
+.input-prepend-text {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  margin-top: 7px;
+  margin-right: 5px;
+}
+

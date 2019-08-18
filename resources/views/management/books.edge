@@ -25,6 +25,17 @@
                                 {{--  <a href="{{ route('category.list') }}">View Book Categories</a>  --}}
                             </div>
                         </div>
+                        <div class="account__form pt-0 pl-0 pb-0 pr-0 mb-1 mt-0 mr-2 pull-right">
+                            <div class="form__btn">
+                                <button onclick="event.preventDefault();" v-on:click="search">Search Book</button>
+                                {{--  <a href="{{ route('category.list') }}">View Book Categories</a>  --}}
+                            </div>
+                        </div>
+                        <div class="contact-form-wrap">
+                            <div class="single-contact-form space-between">
+                                <input type="text" name="search" placeholder="Search book " v-model="filter_val">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="table-content wnro__table table-responsive">
@@ -37,23 +48,35 @@
                                 <th class="product-price">Discount</th>
                                 <th class="product-quantity">Quantity</th>
                                 <th class="product-name">Category</th>
+                                @if(auth.user.is_admin)
+                                    <th class="product-name">Added By</th>
+                                @endif
                                 <th class="product-name" style="border-right:1px"></th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(!books.length)
                                 <tr>
-                                    <td class="product-name" colspan="7"><strong>No book(s) found.</strong></td>
+                                <td class="product-name" colspan="{{ auth.user.is_admin == 1 ? '8' : '7'}}"><strong>No book(s) found.</strong></td>
                                 </tr>
                             @endif
                             @each(item in books)
                             <tr>
-                                <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
+                            <td class="product-thumbnail">
+                                @if(item.image == null)
+                                    <a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a>
+                                @else
+                                    <a href="#"><img src="/uploads/{{ item.image }}" alt="product img"></a>
+                                @endif
+                            </td>
                                 <td class="product-name"><a href="#">{{ item.book_name }}</a></td>
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-price"><span class="amount">{{ item.discount }}%</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
                                 <td class="product-name">{{ item.category.category || ''}}</td>
+                                @if(auth.user.is_admin)
+                                    <td class="product-name">{{ item.user.firstname + ' ' + item.user.lastname  || ''}}</td>
+                                @endif
                                 <td class="product-name"><a href="{{ route('book.show', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="editModal({{ item.id }})">Edit</a> <a href="{{ route('book.delete', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="deleteBook({{ item.id }})">Remove</a></td>
                             </tr>
                             @endeach
@@ -84,14 +107,10 @@
                         </div>
                         <div class="single-contact-form space-between">
                             <div class="row col-lg-12">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Description</label>
                                     <textarea class="ml-2" name="description" v-model="description" placeholder="Type your book description here.."></textarea>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="single-contact-form space-between">
-                            <div class="row col-lg-12">
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Category</label>
                                     <div class="row col-lg-12">
@@ -106,10 +125,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Quantity</label>
-                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity">
-                                </div>
                             </div>
                         </div>
                         <div class="single-contact-form space-between">
@@ -119,14 +134,28 @@
                                     <input type="text" name="price" v-model="price" placeholder="Book Price">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="pull-left ml-2">Book Discount</label>
-                                    <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
+                                    <label class="pull-left ml-2">Book Quantity</label>
+                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity">
                                 </div>
                             </div>
                         </div>
-                        <div class="addtocart-btn pull-right mr-5 mt-0">
-                            <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="{{ state === 'add' ? 'saveBook' : 'updateBook' }}">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
+                        <div class="single-contact-form space-between">
+                            <div class="row col-lg-12">
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Book Discount</label>
+                                    <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Image</label>
+                                    <input type="file" id="image" name="image" @onchange="image">
+                                </div>
+                            </div>
                         </div>
+                        <div class="col-lg-12 mb-5">
+                            <div class="addtocart-btn pull-right mr-5 mt-0">
+                            <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="submit">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
+                        </div>
+                    </div>
                 </div> 
             </div>
             <div class="close__wrap" v-on:click="closeModal">
@@ -155,12 +184,23 @@
                     quantity: '{{ quantity }}',
                     image: '{{ image }}',
                     state: null,
+                    filter_val: '',
                 }
             },
             mounted () {
                 
             },
             methods: {
+                submit() {
+                    var state = this.state
+                    if (state == 'add')
+                    {
+                        this.saveBook()
+                    }
+                    else if (state =='edit'){
+                        this.updateBook()
+                    }
+                },
                 deleteBook(id) {
                     console.log('deleting ' +id)
                     Swal.fire({
@@ -231,43 +271,50 @@
                 saveBook() {
                     var app = this
                     console.log('book save')
-                    // axios.post('{{ route('book.store') }}',{
-                    //     book_name: app.book_name,
-                    //     description: app.description,
-                    //     author: app.author,
-                    //     category_id: app.category,
-                    //     price: app.price,
-                    //     discount: app.discount,
-                    //     quantity: app.quantity,
-                    //     image: app.image,
-                    // })
-                    // .then(function(response){
-                    //     console.log(response)
-                        // if (response.data.status == 'success') {
-                        //     Swal.fire(
-                        //         response.data.message,
-                        //         'Successfully added.',
-                        //         response.data.status,
-                        //     ).then(function(){
-                        //         window.location = '{{ route('user.books') }}'
-                        //     })
-                        // }
-                        // else if(response.data.status == 'error') {
-                        //     Swal.fire(
-                        //         response.data.message,
-                        //         'Failed to add book.',
-                        //         response.data.status,
-                        //     )
-                        // }
-                    // })
-                    // .catch(function (response) {
-                    //     console.log(response)
-                    //     // Swal.fire(
-                    //     //     response.message,
-                    //     //     'Failed to add book.',
-                    //     //     response.message,
-                    //     // )
-                    // })
+                    var data = new FormData
+                    var imageFile = document.getElementById("image").files[0]
+                    if(!(imageFile == undefined))
+                    {
+                        data.append('image', imageFile, imageFile.name)
+                    }
+                    data.append('name', app.name)
+                    data.append('book_name', app.book_name)
+                    data.append('description', app.description)
+                    data.append('author', app.author)
+                    data.append('category_id', app.category)
+                    data.append('price', app.price)
+                    data.append('discount', app.discount)
+                    data.append('quantity', app.quantity)
+                    var settings = { headers: { 'content-type': 'multipart/form-data' } }
+                    console.log(imageFile)
+                    axios.post('{{ route('book.store') }}', data, settings )
+                    .then(function(response){
+                        console.log(response)
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully added.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location = '{{ route('user.books') }}'
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to add book.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                    .catch(function (response) {
+                        console.log(response)
+                        // Swal.fire(
+                        //     response.message,
+                        //     'Failed to add book.',
+                        //     response.message,
+                        // )
+                    })
                 },
                 updateBook() {
                     var app = this
@@ -311,6 +358,9 @@
                     var app = this
                     app.state = '';
                     $('.bookForm_active').removeClass('is-visible');
+                },
+                search() {
+                    window.location = "{{ route('book.search') }}?q="+this.filter_val
                 }
             }
     })

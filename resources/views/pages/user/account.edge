@@ -7,26 +7,37 @@
                 <div class="my__account__wrapper">
                     <h3 class="account__title">My Account</h3>
                         <div id="account-form" class="account__form">
-                            <div class="input__box">
-                                <label>Firstname <span>*</span></label>
-                                <input type="text" name="firstname" v-model="firstname">
-                            </div>
-                            <div class="input__box">
-                                <label>Middlename <span>*</span></label>
-                                <input type="text" name="middlename" v-model="middlename">
-                            </div>
-                            <div class="input__box">
-                                <label>Lastname <span>*</span></label>
-                                <input type="text" name="lastname" v-model="lastname">
-                            </div>
-                            <div class="input__box">
-                                <label>Email address <span>*</span></label>
-                                <input type="email" name="email" v-model="email">
-                            </div>
-                            <div class="input__box">
-                                <label>Contach Number <span>*</span></label>
-                                <input type="text" name="contact_no" v-model="contact_no">
-                            </div>
+                                <div class="input__box">
+                                        <label>Firstname <span>*</span></label>
+                                        <input type="text" name="firstname" v-model="firstname" class="form-control" :class="{'is-invalid': errors.has('firstname')}" v-validate="'required'" placeholder="Firstname">
+                                        <small class="text-danger" v-cloak>
+                                            @{{ errors.first('firstname') }}
+                                        </small>
+                                    </div>
+                                    <div class="input__box">
+                                        <label>Middlename <span>*</span></label>
+                                        <input type="text" name="middlename" v-model="middlename" class="form-control" :class="{'is-invalid': errors.has('middlename')}" v-validate="'required'" placeholder="Middle name">
+                                        <small class="text-danger" v-cloak>
+                                            @{{ errors.first('middlename') }}
+                                        </small>
+                                    </div>
+                                    <div class="input__box">
+                                        <label>Lastname <span>*</span></label>
+                                        <input type="text" name="lastname" v-model="lastname" class="form-control" :class="{'is-invalid': errors.has('lastname')}" v-validate="'required'" placeholder="Lastname">
+                                        <small class="text-danger" v-cloak>
+                                            @{{ errors.first('lastname') }}
+                                        </small>
+                                    </div>
+                                    <div class="input__box">
+                                        <label>Contact number <span>*</span></label>
+                                        <div class="input-prepend">
+                                            <span class="input-prepend-text">+63</span>
+                                            <input type="contact_no" name="contact_no" v-model="contact_no" class="form-control" :class="{'is-invalid': errors.has('contact_no')}" v-validate="'required'" placeholder="Contact Number" maxlength="10">
+                                        </div>
+                                        <small class="text-danger" v-cloak>
+                                            @{{ errors.first('contact_no') }}
+                                        </small>
+                                    </div>
                             <div class="form__btn">
                                 <button v-on:click="updateAccount">Update</button>
                             </div>
@@ -61,9 +72,7 @@
                         firstname: app.firstname,
                         middlename: app.middlename,
                         lastname: app.lastname,
-                        email: app.email,
                         contact_no: app.contact_no,
-                        image: app.image,
                     })
                     .then(function(response){
                         if (response.data.status == 'success') {
@@ -72,7 +81,7 @@
                                 'Successfully updated.',
                                 response.data.status,
                             ).then(function(){
-                                window.location = '{{ route('user.books') }}'
+                                window.location = '{{ route('user.account') }}'
                             })
                         }
                         else if(response.data.status == 'error') {

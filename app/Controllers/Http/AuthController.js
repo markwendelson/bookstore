@@ -2,6 +2,8 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
+const Hash = use('Hash')
+var randomstring = require("randomstring")
 
 class AuthController {
     async showLogin ({ auth, response, view }) {
@@ -19,15 +21,6 @@ class AuthController {
             return response.route('page.index')
         } catch (error) {
             return view.render('auth.register')
-        }
-    }
-
-    async forgotPassword ({ view }) {
-        try {
-            await auth.check()
-            return response.route('page.index')
-        } catch (error) {
-            return view.render('auth.forgotpassword')
         }
     }
 
@@ -121,9 +114,10 @@ class AuthController {
         });
     }
 
-    async changePassword ({ params, request, response }) {
+    async changePassword ({ params, request, session, response, auth }) {
         const rules = {
-            password: 'required'
+            password: 'required',
+            current_password: 'required'
         }
 
         const validation = await validate(request.all(), rules)
@@ -134,21 +128,31 @@ class AuthController {
       
             return response.json({
                 message: validation.messages(),
-                status: 200,
+                status: 'error',
                 data: null
             });
         }
-        const userInfo = request.only(['password'])
+        const userInfo = request.only(['password', 'current_password'])
 
-        const user = await User.find(params.id)
-        if (!user) {
-            return response.status(404).json(null)
+        const user = await User.find(auth.user.id)
+
+        if (!user.password == Hash.make(userInfo.current_password)) {
+            return response.json({
+                message: 'Invalid current password',
+                status: 'error',
+                data: null
+            });
         }
         user.password = userInfo.password
+       
 
         await user.save()
         
-        return response.status(200).json(user)
+        return response.json({
+            message: 'Password changed successfully.',
+            status: 'success',
+            data: user
+        });
     }
 
     async showChangePassword ({ view }) {

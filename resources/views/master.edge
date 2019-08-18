@@ -5,6 +5,7 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>BookStore - Book Selling Online Application</title>
 	<meta name="description" content="">
+	<meta name="csrf-token" content="{{csrfToken}}">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<!-- Favicons -->
@@ -85,8 +86,9 @@
 			}
 		})
 
-		function test(){
-			console.log('test')
+		function storeSearch(){
+			let val = document.getElementById('storeSearch').val
+			window.location = "{{ route('page.search') }}?q="+val
 		}
 		</script>
 	@section('extra_scripts')

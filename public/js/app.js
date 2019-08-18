@@ -3231,7 +3231,7 @@ module.exports = keys;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.13';
+  var VERSION = '4.17.14';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -44247,14 +44247,15 @@ window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js")
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 window.axios.defaults.headers.common.crossDomain = true;
-window.axios.defaults.baseURL = 'http://localhost:3333';
+window.axios.defaults.baseURL = '/';
 var token = document.head.querySelector('meta[name="csrf-token"]');
-console.log('Token ' + token); // if (token) {
-//   window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-// } else {
-//   console.log('Token '+ token)
-//   console.error('CSRF token not found: https://adonisjs.com/docs/4.1/csrf');
-// }
+
+if (token) {
+  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+} else {
+  console.log('Token ' + token);
+  console.error('CSRF token not found: https://adonisjs.com/docs/4.1/csrf');
+}
 
 /***/ }),
 
@@ -44289,8 +44290,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vee_validate__WEBPACK_IMPORTED_MO
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\laragon\www\bookstore\vue\app.js */"./vue/app.js");
-module.exports = __webpack_require__(/*! C:\laragon\www\bookstore\resources\assets\sass\app.scss */"./resources/assets/sass/app.scss");
+__webpack_require__(/*! /Users/wendel/Sites/bookstore/vue/app.js */"./vue/app.js");
+module.exports = __webpack_require__(/*! /Users/wendel/Sites/bookstore/resources/assets/sass/app.scss */"./resources/assets/sass/app.scss");
 
 
 /***/ })

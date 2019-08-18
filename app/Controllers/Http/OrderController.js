@@ -2,7 +2,6 @@
 
 const { validate } = use('Validator')
 const Orders = use('App/Models/Order')
-const Books = use('App/Models/Book')
 
 class OrderController {
     async index({ response }){

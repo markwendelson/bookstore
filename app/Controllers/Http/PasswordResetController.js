@@ -1,15 +1,13 @@
 'use strict'
 
+const { validate, validateAll } = use('Validator')
 const User = use('App/Models/User')
 const PasswordReset = use('App/Models/PasswordReset')
-const randomString = require('random-string')
+const randomString = require('randomstring')
 const Mail = use('Mail')
 const Hash = use('Hash')
 
 class PasswordResetController {
-    async showLinkRequestForm ({ view }) {
-        return view.render('auth.passwords.email')
-      }
 
     async sendResetLinkEmail ({ request, session, response }) {
         // validate form inputs
@@ -20,10 +18,13 @@ class PasswordResetController {
         if (validation.fails()) {
           session.withErrors(validation.messages()).flashAll()
     
-          return response.redirect('back')
+          return response.json({
+              message: validation.messages(),
+              status: 'error',
+              data: null
+          });
         }
     
-        try {
           // get user
           const user = await User.findBy('email', request.input('email'))
     
@@ -31,43 +32,40 @@ class PasswordResetController {
     
           const { token } = await PasswordReset.create({
             email: user.email,
-            token: randomString({ length: 40 })
+            token: randomString.generate(40)
           })
+    
+          const Env = use('Env')
+          const appUrl = Env.get('APP_URL');
     
           const mailData = {
             user: user.toJSON(),
-            token
+            token,
+            appUrl
           }
-    
-          await Mail.send('auth.emails.password_reset', mailData, message => {
+
+          await Mail.send('emails.password_reset', mailData, message => {
             message
               .to(user.email)
               .from('support@essu-bookstore.com')
               .subject('Password reset link')
           })
     
-          session.flash({
-            notification: {
-              type: 'success',
-              message: 'A password reset link has been sent to your email address.'
-            }
-          })
-    
-          return response.redirect('back')
-        } catch (error) {
-          session.flash({
-            notification: {
-              type: 'danger',
-              message: 'Sorry, there is no user with this email address.'
-            }
-          })
-    
-          return response.redirect('back')
-        }
+          return response.json({
+              message: 'A password reset link has been sent to your email address.',
+              status: 'success',
+              data: user
+          });
+        
       }
-    
-      showResetForm ({ params, view }) {
-        return view.render('auth.passwords.reset', { token: params.token })
+
+      async showResetForm ({ params, view }) {
+        const data = await PasswordReset.query().where('token', params.token).first()
+        if (!data) {
+            return view.render('pages.error404')
+        } else {
+            return view.render('auth.reset-password', { data })
+        }
       }
     
       async reset ({ request, session, response }) {
@@ -75,65 +73,57 @@ class PasswordResetController {
         const validation = await validateAll(request.all(), {
           token: 'required',
           email: 'required',
-          password: 'required|confirmed'
+          password: 'required'
         })
     
         if (validation.fails()) {
           session
             .withErrors(validation.messages())
-            .flashExcept(['password', 'password_confirmation'])
     
-          return response.redirect('back')
+          return response.json({
+              message: validation.messages(),
+              status: 'error',
+              data: null
+          });
         }
+
+        const { token, email, password } = request.only([
+          'token',
+          'email',
+          'password'
+      ])
     
-        try {
           // get user by the provider email
-          const user = await User.findBy('email', request.input('email'))
+          const user = await User.findBy('email', email)
     
           // check if password reet token exist for user
-          const token = await PasswordReset.query()
+          const data = await PasswordReset.query()
             .where('email', user.email)
-            .where('token', request.input('token'))
+            .where('token', token)
             .first()
     
-          if (!token) {
+          if (!data) {
             // display error message
-            session.flash({
-              notification: {
-                type: 'danger',
-                message: 'This password reset token does not exist.'
-              }
-            })
-    
-            return response.redirect('back')
+            return response.json({
+                message: 'This password reset token does not exist.',
+                status: 'error',
+                data: null
+            });
           }
     
-          user.password = await Hash.make(request.input('password'))
+          user.password = password
           await user.save()
     
           // delete password reset token
           await PasswordReset.query().where('email', user.email).delete()
     
           // display success message
-          session.flash({
-            notification: {
-              type: 'success',
-              message: 'Your password has been reset!'
-            }
-          })
+          return response.json({
+            message: 'Your password has been reset!',
+            status: 'success',
+            data: null
+        });
     
-          return response.redirect('/login')
-        } catch (error) {
-          // display error message
-          session.flash({
-            notification: {
-              type: 'danger',
-              message: 'Sorry, there is no user with this email address.'
-            }
-          })
-    
-          return response.redirect('back')
-        }
       }
 }
 

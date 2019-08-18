@@ -1,5 +1,14 @@
 @layout('master')
 @section('content')
+<style>
+    .img {
+        width: 270px;
+        height: 340px;
+        display:table-cell; 
+        vertical-align:middle; 
+        text-align:center;
+    }
+</style>
 <div class="ht__bradcaump__area bg-image--6">
 </div>
 <div id="app" class="page-shop-sidebar left--sidebar bg--white section-padding--lg">
@@ -11,7 +20,7 @@
                         <h3 class="wedget__title">Book Categories</h3>
                         <ul>
                             @each(category in categories)
-                                    <li><a href="/book/?category={{ category.category }}" 
+                                    <li><a href="#" 
                                     onclick="event.preventDefault();"
                                     v-on:click="addToCart"
                                     >{{ category.category }} <span>({{ category.book.length }})</span></a></li>
@@ -29,7 +38,7 @@
                                 <a class="nav-item nav-link" data-toggle="tab" href="#nav-list" role="tab"><i class="fa fa-list"></i></a>
                             </div>
                             <p>Showing {{ books.page }} of {{ books.lastPage }} results</p>
-                            <div class="orderby__wrapper">
+                            <div class="orderby__wrapper" style="display:none">
                                 <span>Sort By</span>
                                 <select class="shot__byselect">
                                     <option>Price - Low to High</option>
@@ -53,8 +62,24 @@
                             @each(book in books.data)
                                 <div class="product product__style--3 col-lg-4 col-md-4 col-sm-6 col-12">
                                     <div class="product__thumb">
-                                        <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/books/1.jpg" alt="product image"></a>
-                                        <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/books/2.jpg" alt="product image"></a>
+                                            <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}">
+                                                @if(book.image == null)
+                                                    <img src="/shopper/images/books/1.jpg" alt="product image">
+                                                @else
+                                                    <div class="img">
+                                                        <img src="/uploads/{{ book.image }}" alt="product img">
+                                                    </div>
+                                                @endif
+                                            </a>
+                                            <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}">
+                                                @if(book.image == null)
+                                                    <img src="/shopper/images/books/1.jpg" alt="product image">
+                                                @else
+                                                    <div class="img">
+                                                        <img src="/uploads/{{ book.image }}" alt="product img">
+                                                    </div>
+                                                @endif
+                                            </a>
                                         <div class="hot__box">
                                             <span class="hot-label">BEST SELLER</span>
                                         </div>
@@ -69,10 +94,14 @@
                                             <div class="actions_inner">
                                                 <ul class="add_to_links">
                                                 @loggedIn
-                                                <li><a class="cart" href="/add-to-cart" 
-                                                        onclick="event.preventDefault();"
-                                                        v-on:click="addToCart({{ book.id }})"
-                                                    ><i class="bi bi-shopping-bag4"></i></a></li>
+                                                    @if(!auth.user.is_admin)    
+                                                        <li>
+                                                            <a class="cart" href="/add-to-cart" 
+                                                                onclick="event.preventDefault();"
+                                                                v-on:click="addToCart({{ book.id }})"
+                                                            ><i class="bi bi-shopping-bag4"></i></a>
+                                                        </li>
+                                                    @endif
                                                 @endloggedIn
                                                 <li><a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link" href="#{{ book.id }}"><i class="bi bi-search"></i></a></li>
                                                 </ul>
@@ -104,8 +133,24 @@
                             <!-- Start Single Product -->
                             <div class="list__view">
                                 <div class="thumb">
-                                    <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/product/1.jpg" alt="product images"></a>
-                                    <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}"><img src="/shopper/images/product/2.jpg" alt="product images"></a>
+                                    <a class="first__img" href="{{ route('page.single-item',{id:book.id }) }}">
+                                        @if(book.image == null)
+                                            <img src="/shopper/images/product/1.jpg" alt="product images">
+                                        @else
+                                            <div class="img">
+                                                <img src="/uploads/{{ book.image }}" alt="product images">
+                                            </div>
+                                        @endif
+                                    </a>
+                                    <a class="second__img animation1" href="{{ route('page.single-item',{id:book.id }) }}">
+                                        @if(book.image == null)
+                                            <img src="/shopper/images/product/2.jpg" alt="product images">
+                                        @else
+                                            <div class="img">
+                                                <img src="/uploads/{{ book.image }}" alt="product images">
+                                            </div>
+                                        @endif
+                                    </a>
                                 </div>
                                 <div class="content">
                                     <h2><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name }}</a></h2>
@@ -124,10 +169,14 @@
                                     <p>{{ book.description}}</p>
                                     <ul class="cart__action d-flex">
                                             @loggedIn
-                                            <li class="cart"><a href="/add-to-cart" 
-                                            onclick="event.preventDefault();"
-                                            v-on:click="addToCart({{ book.id }})"
-                                        >Add to cart</a></li>
+                                                @if(!auth.user.is_admin)
+                                                    <li class="cart">
+                                                        <a href="/add-to-cart" 
+                                                            onclick="event.preventDefault();"
+                                                            v-on:click="addToCart({{ book.id }})"
+                                                        >Add to cart</a>
+                                                    </li>
+                                                @endif
                                         @endloggedIn
                                     </ul>
 
@@ -145,7 +194,7 @@
 
 <div id="quickview-wrapper">
     <!-- Modal -->
-    @each(book in books.data)      
+    @each(book in books.data)   
     <div class="modal fade" id="{{ book.id }}" tabindex="-1" role="dialog">
         <div class="modal-dialog modal__container" role="document">
             <div class="modal-content">
@@ -157,7 +206,11 @@
                         <!-- Start product images -->
                         <div class="product-images">
                             <div class="main-image images">
-                                <img alt="big images" src="/shopper/images/product/big-img/1.jpg">
+                                @if(book.image == null)
+                                    <a href="#"><img alt="big images" src="/shopper/images/books/2.jpg"></a>
+                                @else
+                                    <a href="#"><img src="/uploads/{{ book.image }}" alt="product img"></a>
+                                @endif
                             </div>
                         </div>
                         <!-- end product images -->
@@ -173,12 +226,14 @@
                                 {{ book.description }}
                             </div>
                             @loggedIn
-                            <div class="addtocart-btn">
-                                <a href="/add-to-cart" 
-                                onclick="event.preventDefault();"
-                                v-on:click="addToCart({{ book.id }})"
-                                >Add to cart</a>
-                            </div>
+                                @if(!auth.user.is_admin)
+                                    <div class="addtocart-btn">
+                                        <a href="/add-to-cart" 
+                                        onclick="event.preventDefault();"
+                                        v-on:click="addToCart({{ book.id }})"
+                                        >Add to cart</a>
+                                    </div>
+                                @endif
                             @endloggedIn
                         </div>
                     </div>

@@ -68,7 +68,7 @@ class CategoryController {
 
         return response.json({
             message: "Category deleted",
-            status: 204,
+            status: 'success',
             data: null
         });
     }
@@ -111,7 +111,7 @@ class CategoryController {
     
     }
 
-    async management ({ view, auth, response }) {
+    async management ({ view }) {
         let categories = await Category.all()
         categories = categories.toJSON()
 

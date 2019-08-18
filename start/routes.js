@@ -17,14 +17,19 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index').as('page.index')
+Route.get('/search', 'PageController.search').as('page.search')
 Route.get('/view/book/:id', 'PageController.singleItem').as('page.single-item')
 Route.get('/error', 'PageController.pageNotFound').as('page.notFound')
 
 Route.group(()=> {
     Route.get('/login', 'AuthController.showLogin').as('auth.login').middleware('guest')
     Route.get('/register', 'AuthController.showRegister').as('auth.register').middleware('guest')
-    Route.get('/forgot-password', 'AuthController.forgotPassword').as('auth.forgotpassword').middleware('auth')
-    Route.get('/change-password', 'AuthController.changePassword').as('auth.changepassword').middleware('auth')
+    Route.get('/forgot-password', 'AuthController.showForgotPassword').as('auth.forgotpassword').middleware('guest')
+    Route.post('/forgot-password', 'PasswordResetController.sendResetLinkEmail').as('auth.sendResetpassword').middleware('guest')
+    Route.get('/reset-password/:token', 'PasswordResetController.showResetForm').as('auth.showResetForm').middleware('guest')
+    Route.post('/reset-password/', 'PasswordResetController.reset').as('auth.resetpassword').middleware('guest')
+    Route.get('/change-password', 'AuthController.showChangePassword').as('auth.showChangePassword').middleware('auth')
+    Route.post('/change-password', 'AuthController.changePassword').as('auth.changepassword').middleware('auth')
     Route.get('/info', 'UserController.userAccount').as('user.account').middleware('auth')
     Route.get('/cart', 'UserController.userCart').as('user.cart').middleware('auth')
     Route.get('/orders', 'UserController.userOrders').as('user.order').middleware('auth')
@@ -41,6 +46,7 @@ Route.group(()=> {
     Route.get('list', 'UserController.index')
 }).prefix('users')
 
+Route.delete('/user/:id', 'UserController.destroy').as('user.delete').middleware('auth')
 Route.get('/user/:id', 'UserController.show')
 Route.put('/user/:id', 'UserController.update').as('user.update').middleware('auth')
 
@@ -83,7 +89,10 @@ Route.group(()=> {
 // management
 Route.group(()=> {
     Route.get('category', 'CategoryController.management').as('management.category')
-    Route.on('books').render('management.books')
-    Route.on('users').render('management.users')
+    Route.get('books', 'BookController.management').as('management.books')
+    Route.get('books/search', 'BookController.search').as('book.search')
+    Route.get('users', 'UserController.management').as('management.users')
+    Route.get('users/search', 'UserController.search').as('user.search')
+    Route.put('users/can_buy_and_sell/:id', 'UserController.updateBuyAndSell').as('user.can_buy_and_sell')
 }).prefix('management')
 
