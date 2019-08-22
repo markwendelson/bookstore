@@ -20,9 +20,7 @@
                         <h3 class="wedget__title">Book Categories</h3>
                         <ul>
                             @each(category in categories)
-                                    <li><a href="#" 
-                                    onclick="event.preventDefault();"
-                                    v-on:click="addToCart"
+                                    <li><a href="{{ route('page.book-by-category',{ id:category.id }) }}"
                                     >{{ category.category }} <span>({{ category.book.length }})</span></a></li>
                             @endeach
                         </ul>

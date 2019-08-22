@@ -109,7 +109,11 @@ class UserController {
         let total = orders.reduce(function (sum, ord) {
             return sum + (ord.quantity * ord.price) ;
         }, 0);
-        return view.render('pages.user.orders', { orders, total })
+
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+
+        return view.render('pages.user.orders', { orders, total, cart })
     }
 
     async userCheckout ({ request, view, auth, response }) {
@@ -117,11 +121,17 @@ class UserController {
         // return response.json(order)
         let orders = await Orders.query().with('book').where('user_id',auth.user.id).fetch()
         orders = orders.toJSON()
-        return view.render('pages.user.checkout', { orders })
+
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+
+        return view.render('pages.user.checkout', { orders, cart })
     }
 
-    async userAccount ({ view }) {
-        return view.render('pages.user.account')
+    async userAccount ({ view, auth }) {
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+        return view.render('pages.user.account', { cart })
     }
 
     async userGetCheckout ({ auth, response }) {
@@ -136,7 +146,10 @@ class UserController {
         let categories = await Category.all()
         categories = categories.toJSON()
 
-        return view.render('management.books', { books, categories })
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+
+        return view.render('management.books', { books, categories, cart })
     }
 
     async management ({ view }) {

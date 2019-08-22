@@ -2,6 +2,7 @@
 
 const { validate } = use('Validator')
 const User = use('App/Models/User')
+const Cart = use('App/Models/Cart')
 const Hash = use('Hash')
 var randomstring = require("randomstring")
 
@@ -155,8 +156,10 @@ class AuthController {
         });
     }
 
-    async showChangePassword ({ view }) {
-        return view.render('auth.change-password')
+    async showChangePassword ({ view, auth }) {
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+        return view.render('auth.change-password', { cart })
     }
 
     async showForgotPassword ({ view }) {

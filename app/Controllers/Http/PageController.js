@@ -9,32 +9,48 @@ class PageController {
         const currentPage = request.get().page || 1
         const perPage = 10
         let categories = await Category.query().with('book').fetch()
-        let books = await Books.query().paginate(currentPage,perPage)
+        let books, cart = null
 
-        let user_id = 0;
-        if(auth == null)
+        if(auth.user == null)
         {
-            user_id = auth.user.id
+            books = await Books.query().paginate(currentPage,perPage)
         }
         else
         {
-            user_id = 0
+            books = await Books.query().whereNot('created_by',auth.user.id).paginate(currentPage,perPage)
+            cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+            cart = cart.toJSON()
         }
-        let cart = await Cart.query().with('book').where('user_id',user_id).fetch()
         books = books.toJSON()
         categories = categories.toJSON()
-        cart = cart.toJSON()
         return view.render('pages.index', { categories, books, cart })
     }
 
-    async singleItem ({ params, view, response }) {
+    async singleItem ({ params, view, auth, response }) {
         let categories = await Category.query().with('book').fetch()
-        let book = await Books.find(params.id)
+        let book = await Books.findOrFail(params.id)
         await book.load('category')
         await book.load('comments')
         book = book.toJSON()
         categories = categories.toJSON()
-        return view.render('pages.single-item', { categories, book })
+
+        let latest, cart = null;
+        if (auth.user == null){
+            latest = await Books.query().orderBy('created_at', 'DESC').first()
+        } else {
+            latest = await Books.query().orderBy('created_at', 'DESC').first()
+            cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+            cart = cart.toJSON()
+        }
+        latest = latest.toJSON()
+
+        let relatedProducts = await Books.query().where('category_id', book.category_id || 0)
+                            .orderBy('created_at', 'DESC')
+                            .limit(3)
+                            .fetch()
+        relatedProducts = relatedProducts.toJSON()
+        // return response.json({ relatedProducts })
+        return view.render('pages.single-item', { categories, book, latest, cart })
     }
 
     async pageNotFound ({ view }) {
@@ -64,6 +80,22 @@ class PageController {
         books = books.toJSON()
         categories = categories.toJSON()
         cart = cart.toJSON()
+        return view.render('pages.index', { categories, books, cart })
+    }
+
+    async viewByCategory ({ params,view, request, auth, response}) {
+        const currentPage = request.get().page || 1
+        const perPage = 10
+        let categories = await Category.query().with('book').fetch()
+        let books = await Books.query().where('category_id',params.id).paginate(currentPage,perPage)
+
+        let cart = null;
+        if(!auth == null) {
+            let cart = await Cart.query().with('book').where('user_id',user_id).fetch()
+            cart = cart.toJSON()
+        }
+        books = books.toJSON()
+        categories = categories.toJSON()
         return view.render('pages.index', { categories, books, cart })
     }
 }
