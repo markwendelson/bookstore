@@ -110,10 +110,13 @@
                                 <div class="review_form_field">
                                     <div class="input__box">
                                         <span>Comment</span>
-                                        <textarea name="review"></textarea>
+                                        <textarea name="review" v-validate="'required'" v-model="review"></textarea>
+                                        <small class="text-danger" v-cloak>
+                                            @{{ errors.first('review') }}
+                                        </small>
                                     </div>
                                     <div class="review-form-actions">
-                                        <button>Submit Comment</button>
+                                        <button v-on:click="submitComment({{ book.id }})">Submit Comment</button>
                                     </div>
                                 </div>
                             </div>
@@ -126,20 +129,37 @@
                         <h2 class="title__be--2">Related Products</h2>
                     </div>
                     <div class="row mt--60">
-                            <!-- Start Single Product -->
+                        <!-- Start Single Product -->
+                        @each(product in relatedProducts)
                             <div class="product product__style--3 col-lg-4 col-md-4 col-sm-6 col-12">
                                 <div class="product__thumb">
-                                    <a class="first__img" href="single-product.html"><img src="/shopper/images/books/1.jpg" alt="product image"></a>
-                                    <a class="second__img animation1" href="single-product.html"><img src="/shopper/images/books/2.jpg" alt="product image"></a>
+                                        <a class="first__img" href="{{ route('page.single-item',{id:product.id }) }}">
+                                            @if(product.image == null)
+                                                <img src="/shopper/images/books/1.jpg" alt="product image">
+                                            @else
+                                                <div class="img">
+                                                    <img src="/uploads/{{ product.image }}" alt="product img">
+                                                </div>
+                                            @endif
+                                        </a>
+                                        <a class="second__img animation1" href="{{ route('page.single-item',{id:product.id }) }}">
+                                            @if(product.image == null)
+                                                <img src="/shopper/images/books/1.jpg" alt="product image">
+                                            @else
+                                                <div class="img">
+                                                    <img src="/uploads/{{ product.image }}" alt="product img">
+                                                </div>
+                                            @endif
+                                        </a>
                                     <div class="hot__box">
                                         <span class="hot-label">BEST SALLER</span>
                                     </div>
                                 </div>
                                 <div class="product__content content--center">
-                                    <h4><a href="single-product.html">robin parrish</a></h4>
+                                    <h4><a href="single-product.html">{{ product.book_name }}</a></h4>
                                     <ul class="prize d-flex">
-                                        <li>$35.00</li>
-                                        <li class="old_prize">$35.00</li>
+                                        <li>Php {{ product.price - (product.price * (product.discount/100)) }}</li>
+                                        <li class="old_prize">Php {{ product.price }}</li>
                                     </ul>
                                     <div class="action">
                                         <div class="actions_inner">
@@ -149,9 +169,10 @@
                                             </ul>
                                         </div>
                                     </div>
+                                </div>
                             </div>
-                            <!-- Start Single Product -->
-                        </div>
+                        @endeach
+                        <!-- Start Single Product -->
                     </div>
                 </div>
             </div>
@@ -191,7 +212,8 @@
         el: '#app',
             data () {
                 return {
-                    quantity: 1
+                    quantity: 1,
+                    review:'',
                 }
             },
             mounted () {
@@ -218,6 +240,32 @@
                             Swal.fire(
                                 response.data.message,
                                 'Failed to add to cart.',
+                                response.data.status,
+                            )
+                        }
+                    })
+                },
+                submitComment(bookId) {
+                    var app = this
+                    console.log(this.review)
+                    axios.post('{{ route('comment.store') }}',{
+                        book_id: bookId,
+                        comment: app.review
+                    })
+                    .then( function(response){
+                        if (response.data.status == 'success') {
+                            Swal.fire(
+                                response.data.message,
+                                'Successfully added a comment.',
+                                response.data.status,
+                            ).then(function(){
+                                window.location.reload()
+                            })
+                        }
+                        else if(response.data.status == 'error') {
+                            Swal.fire(
+                                response.data.message,
+                                'Failed to add comment.',
                                 response.data.status,
                             )
                         }

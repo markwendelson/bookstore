@@ -97,3 +97,7 @@ Route.group(()=> {
     Route.put('users/can_buy_and_sell/:id', 'UserController.updateBuyAndSell').as('user.can_buy_and_sell')
 }).prefix('management')
 
+// comment 
+Route.group(()=> {
+    Route.post('store', 'CommentController.store').as('comment.store')
+}).prefix('comment')

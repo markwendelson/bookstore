@@ -121,11 +121,11 @@
 
 <!-- Start Search Popup -->
 <div class="box-search-content search_active block-bg close__top">
-    <form id="search_mini_form" class="minisearch" action="#">
+    <form id="search_mini_form" class="minisearch">
         <div class="field__search">
-            <input type="text" placeholder="Search entire store here..." id="storeSearch">
+            <input type="text" placeholder="Search entire store here..." id="storeSearch" required>
             <div class="action">
-                <a href="/search" onclick="event.preventDefault();storeSearch();"><i class="zmdi zmdi-search"></i></a>
+                <a href="/search" onclick="event.preventDefault(); storeSearch();"><i class="zmdi zmdi-search"></i></a>
             </div>
         </div>
     </form>

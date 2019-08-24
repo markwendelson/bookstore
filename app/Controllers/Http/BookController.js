@@ -184,7 +184,7 @@ class BookController {
 
     async search ({ request, view }) {
         const filter_val = request.get('q')["q"]
-        let books = await Books.query()
+        let books = await Books.query().with('category').with('user')
                                 .where('book_name','LIKE','%'+filter_val+'%')
                                 .fetch()
         

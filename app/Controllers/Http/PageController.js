@@ -50,7 +50,7 @@ class PageController {
                             .fetch()
         relatedProducts = relatedProducts.toJSON()
         // return response.json({ relatedProducts })
-        return view.render('pages.single-item', { categories, book, latest, cart })
+        return view.render('pages.single-item', { categories, book, latest, cart, relatedProducts })
     }
 
     async pageNotFound ({ view }) {

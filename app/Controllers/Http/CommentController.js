@@ -32,7 +32,7 @@ class CommentController {
         });
     }
 
-    async store ({ request, response, auth }) {
+    async store ({ request, response, auth, session }) {
         const rules = {
             comment: 'required'
         }
@@ -56,18 +56,18 @@ class CommentController {
         ])
 
         const user_id = auth.user.id
-        const name = auth.user.firstname
-        const comment = await Comments.create({ 
+        const posted_by = auth.user.firstname
+        const userComment = await Comments.create({ 
             book_id, 
             user_id, 
-            name,
+            posted_by,
             comment 
         })
 
         return response.json({
-            message: "comment added",
-            status: 201,
-            data: cat
+            message: "Comment successfully added",
+            status: 'success',
+            data: userComment
         });
     }
 

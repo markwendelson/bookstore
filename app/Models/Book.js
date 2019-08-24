@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Book extends Model {
     comments () {
-        return this.hasMany('App/Models/Comment')
+        return this.hasMany('App/Models/Comment').orderBy('created_at','desc')
     }
 
     category () {

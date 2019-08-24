@@ -87,9 +87,18 @@
 		})
 
 		function storeSearch(){
-			let val = document.getElementById('storeSearch').val
+			let val = document.getElementById("search_mini_form").elements['storeSearch'].value;
 			window.location = "{{ route('page.search') }}?q="+val
 		}
+
+		document.getElementById('search_mini_form').addEventListener('keypress', function(event) {
+			if (event.keyCode == 13) {
+				let val = document.getElementById("search_mini_form").elements['storeSearch'].value;
+				if(val !='')
+				window.location = "{{ route('page.search') }}?q="+val
+				event.preventDefault();
+			}
+		});
 		</script>
 	@section('extra_scripts')
 	@endsection
