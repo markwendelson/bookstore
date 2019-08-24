@@ -13,11 +13,11 @@ class PageController {
 
         if(auth.user == null)
         {
-            books = await Books.query().paginate(currentPage,perPage)
+            books = await Books.query().whereNot('quantity',0).paginate(currentPage,perPage)
         }
         else
         {
-            books = await Books.query().whereNot('created_by',auth.user.id).paginate(currentPage,perPage)
+            books = await Books.query().whereNot('created_by',auth.user.id).whereNot('quantity',0).paginate(currentPage,perPage)
             cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
             cart = cart.toJSON()
         }
@@ -44,7 +44,7 @@ class PageController {
         }
         latest = latest.toJSON()
 
-        let relatedProducts = await Books.query().where('category_id', book.category_id || 0)
+        let relatedProducts = await Books.query().where('category_id', book.category_id || 0).whereNot('id',params.id)
                             .orderBy('created_at', 'DESC')
                             .limit(3)
                             .fetch()

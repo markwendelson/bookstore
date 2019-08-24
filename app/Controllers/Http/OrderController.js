@@ -61,7 +61,7 @@ class OrderController {
             'price',
             'quantity'
         ])
-
+        
         const order = await Orders.create({ 
             order_no, 
             book_id, 

@@ -188,58 +188,60 @@
             </div>
         </div>
     </div>
-</div>
 
-<div id="quickview-wrapper">
-    <!-- Modal -->
-    @each(book in books.data)   
-    <div class="modal fade" id="{{ book.id }}" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal__container" role="document">
-            <div class="modal-content">
-                <div class="modal-header modal__header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="modal-product">
-                        <!-- Start product images -->
-                        <div class="product-images">
-                            <div class="main-image images">
-                                @if(book.image == null)
-                                    <a href="#"><img alt="big images" src="/shopper/images/books/2.jpg"></a>
-                                @else
-                                    <a href="#"><img src="/uploads/{{ book.image }}" alt="product img"></a>
-                                @endif
-                            </div>
-                        </div>
-                        <!-- end product images -->
-                        <div class="product-info">
-                            <h1>{{ book.book_name }}</h1>
-                            <div class="price-box-3">
-                                <div class="s-price-box">
-                                    <span class="new-price">Php {{ book.price - (book.price * (book.discount/100)) }}</span>
-                                    <span class="old-price">Php {{ book.price }}</span>
+
+
+    <div id="quickview-wrapper">
+        <!-- Modal -->
+        @each(book in books.data)   
+        <div class="modal fade" id="{{ book.id }}" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal__container" role="document">
+                <div class="modal-content">
+                    <div class="modal-header modal__header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-product">
+                            <!-- Start product images -->
+                            <div class="product-images">
+                                <div class="main-image images">
+                                    @if(book.image == null)
+                                        <a href="#"><img alt="big images" src="/shopper/images/books/2.jpg"></a>
+                                    @else
+                                        <a href="#"><img src="/uploads/{{ book.image }}" alt="product img"></a>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="quick-desc">
-                                {{ book.description }}
-                            </div>
-                            @loggedIn
-                                @if(!auth.user.is_admin)
-                                    <div class="addtocart-btn">
-                                        <a href="/add-to-cart" 
-                                        onclick="event.preventDefault();"
-                                        v-on:click="addToCart({{ book.id }})"
-                                        >Add to cart</a>
+                            <!-- end product images -->
+                            <div class="product-info">
+                                <h1>{{ book.book_name }}</h1>
+                                <div class="price-box-3">
+                                    <div class="s-price-box">
+                                        <span class="new-price">Php {{ book.price - (book.price * (book.discount/100)) }}</span>
+                                        <span class="old-price">Php {{ book.price }}</span>
                                     </div>
-                                @endif
-                            @endloggedIn
+                                </div>
+                                <div class="quick-desc">
+                                    {{ book.description }}
+                                </div>
+                                @loggedIn
+                                    @if(!auth.user.is_admin)
+                                        <div class="addtocart-btn">
+                                            <a href="/add-to-cart" 
+                                            onclick="event.preventDefault();"
+                                            v-on:click="addToCart({{ book.id }})"
+                                            >Add to cart</a>
+                                        </div>
+                                    @endif
+                                @endloggedIn
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        @endeach
     </div>
-    @endeach
 </div>
 @endsection
 @section('extra_scripts')

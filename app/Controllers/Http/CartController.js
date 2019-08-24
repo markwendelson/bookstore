@@ -2,6 +2,7 @@
 
 const { validate } = use('Validator')
 const Cart = use('App/Models/Cart')
+const Books = use('App/Models/Book')
 
 class CartController {
     async index({ response }){
@@ -63,6 +64,11 @@ class CartController {
             user_id, 
             quantity
         })
+
+        // update book quantity
+        const book = await Books.find(book_id)
+        book.quantity = book.quantity - quantity
+        await book.save()
 
         return response.json({
             message: "Book added to cart",

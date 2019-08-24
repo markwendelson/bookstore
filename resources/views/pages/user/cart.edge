@@ -28,11 +28,16 @@
                                     <input type="hidden" id="order_no" value="{{ order_number }}">
                                     <tr v-for="item in myCart">
                                         <td class="product-thumbnail">
-                                            <a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a>
+                                                <template v-if="item.book.image">
+                                                    <img :src="'/uploads/' + item.book.image" :alt="item.book.book_name">
+                                                </template>
+                                                <template v-else>
+                                                    <img src="/shopper/images/product/sm-3/1.jpg" alt="product img">
+                                                </template>
                                         </td>
                                         <td class="product-name">
                                             <input type="hidden" id="book_id[]" v-model="item.id">
-                                            <a href="#">@{{ item.book.book_name }}</a>
+                                        <a href="view/book" onclick="event.preventDefault();" v-on:click="viewBook(item.book.id)">@{{ item.book.book_name }}</a>
                                         </td>
                                         <td class="product-price">
                                             <span class="amount">@{{ item.book.price - (item.book.price * (item.book.discount/100)) }}</span>
@@ -42,7 +47,7 @@
                                             <input id="quantity[]" type="number" min="1" v-model="item.quantity">
                                         </td>
                                         <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
-                                        <td class="product-remove"><a href="#" @click="removeItem(item.id)">X</a></td>
+                                        <td class="product-remove"><a href="cart/remove" onclick="event.preventDefault();" v-on:click="removeItem(item.id)">X</a></td>
                                     </tr>
                                 </form>
                             </tbody>
@@ -52,7 +57,10 @@
                     <ul class="cart__btn__list d-flex flex-wrap flex-md-nowrap flex-lg-nowrap">
                         <li><a href="#" v-on:click="updateCart()">Update Cart</a></li>
                         {{--  <li class="ml-5"><a href="{{ route('user.checkout') }}" @click="event.preventDefault(); document.getElementById('cart-form').submit();" class="btn btn-submit">Check Out</a></li>  --}}
-                        <li class="ml-5"><a href="#" @click="submitCart()" class="btn btn-submit">Check Out</a></li>
+                        <li class="ml-5">
+                            <a href="checkout" class="btn btn-submit" onclick="event.preventDefault();"
+                            v-on:click="submitCart()">Check Out</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -209,6 +217,9 @@
                         ).then(function(){
                             window.location = '/account/orders/'+order_no
                         })
+                },
+                viewBook(bookId) {
+                    window.location = '/view/book/'+bookId
                 }
             }
     })
