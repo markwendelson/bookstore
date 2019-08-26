@@ -117,18 +117,24 @@
                                 quantity: app.myCart[i].quantity
                             })
                             .then(function (response) {
-                                console.log(response)
+                                if(response.data.status == 'error') {
+                                    Swal.fire(
+                                        'Fail to update cart',
+                                        'Cart has not been updated.',
+                                        'error',
+                                    )
+                                    return;
+                                }
                             })
                             .catch( function(errror){
                                 console.log('error: ', errror);
                         });
                     }
-
                     Swal.fire(
-                        'Update',
+                        'Cart successfully updated.',
                         'Cart has been updated.',
                         'success',
-                        )
+                    )
                 },
                 removeItem(item) {
                     Swal.fire({
