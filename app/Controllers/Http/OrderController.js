@@ -2,6 +2,7 @@
 
 const { validate } = use('Validator')
 const Orders = use('App/Models/Order')
+const Cart = use('App/Models/Cart')
 
 class OrderController {
     async index({ response }){
@@ -54,13 +55,17 @@ class OrderController {
             });
         }
 
-        const { order_no, book_id, user_id, price, quantity } = request.only([
+        const { order_no, book_id, user_id, price, quantity, cart_id } = request.only([
             'order_no',
             'book_id',
             'user_id',
             'price',
-            'quantity'
+            'quantity',
+            'cart_id'
         ])
+
+        const cart = await Cart.find(cart_id)
+        await cart.delete()
         
         const order = await Orders.create({ 
             order_no, 

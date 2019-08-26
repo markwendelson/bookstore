@@ -59,7 +59,7 @@ class CartController {
 
         // check books quantity if has stocks
         const book = await Books.find(book_id)
-        if (book.quantity == 0) {
+        if (book.quantity < quantity) {
             return response.json({
                 message: "No more available stock.",
                 status: 'error',

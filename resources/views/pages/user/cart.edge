@@ -200,6 +200,7 @@
                                 user_id: {{ auth.user.id }},
                                 price: app.myCart[i].quantity * (app.myCart[i].book.price - (app.myCart[i].book.price * (app.myCart[i].book.discount/100))),
                                 quantity: app.myCart[i].quantity,
+                                cart_id: app.myCart[i].id,
                             })
                             .then(function (response) {
                                 console.log(response.data.message)
@@ -208,12 +209,6 @@
                             .catch(function(errror){
                                 console.log('error: ', errror);
                         });
-                    }
-                    for( var i = 0; i < app.myCart.length; i++){
-                        axios.delete('cart/' + this.myCart[i].id)
-                            .then(function (response) {
-                                console.log(response.data.message)
-                        })
                     }
 
                     Swal.fire(
