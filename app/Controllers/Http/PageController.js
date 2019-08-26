@@ -87,7 +87,7 @@ class PageController {
         const currentPage = request.get().page || 1
         const perPage = 10
         let categories = await Category.query().with('book').fetch()
-        let books = await Books.query().where('category_id',params.id).paginate(currentPage,perPage)
+        let books = await Books.query().whereNot('created_by',auth.user.id).where('category_id',params.id).paginate(currentPage,perPage)
 
         let cart = null;
         if(!auth == null) {

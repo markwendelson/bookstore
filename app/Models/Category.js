@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Category extends Model {
     book () {
-        return this.hasMany('App/Models/Book','id', 'category_id')
+        return this.hasMany('App/Models/Book','id', 'category_id').whereNot('quantity',0)
     }
 }
 
