@@ -40,9 +40,11 @@
                                 <div class="box-tocart d-flex">
                                     <span>Qty</span>
                                     <input id="qty" class="input-text qty" name="qty" min="1" value="1" title="Qty" type="number" v-model="quantity">
+                                    @if(!auth.user.is_admin)    
                                     <div class="addtocart__actions">
                                         <button class="tocart" type="submit" v-on:click="addToCart({{ book.id }})" title="Add to Cart">Add to Cart</button>
                                     </div>
+                                    @endif
                                 </div>
                                 <div class="product_meta">
                                     <span class="posted_in">Category: 
