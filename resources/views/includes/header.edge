@@ -51,7 +51,7 @@
                                                     <span class="qun">Qty: {{ item.quantity }}</span>
                                                     <ul class="d-flex justify-content-end">
                                                         <li>
-                                                            <a href="/cart/delete/{{ item.id }}" 
+                                                            <a href="/cart/delete/{{ item.id }}"
                                                                 onclick="event.preventDefault();"
                                                                 v-on:click="removeToCart({{ item.id }})"
                                                             ><i class="zmdi zmdi-delete"></i></a></li>
@@ -84,6 +84,7 @@
                                                 @if(!auth.user.is_admin)
                                                     <span><a href="{{ route('user.books') }}">My Books</a></span>
                                                     <span><a href="{{ route('user.order') }}">My Orders</a></span>
+                                                    <span><a href="{{ route('management.order') }}">Orders</a></span>
                                                 @endif
                                                 <span><a href="{{ route('auth.changepassword') }}">Change Password</a></span>
                                                 <span><a href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
@@ -115,8 +116,8 @@
                 </ul>
             </div>
         </div>
-        <!-- Mobile Menu -->	
-    </div>		
+        <!-- Mobile Menu -->
+    </div>
 </header>
 
 <!-- Start Search Popup -->

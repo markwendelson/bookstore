@@ -1,8 +1,10 @@
 'use strict'
 
 const { validate } = use('Validator')
+const Database = use('Database')
 const Orders = use('App/Models/Order')
 const Cart = use('App/Models/Cart')
+const Books = use('App/Models/Book')
 
 class OrderController {
     async index({ response }){
@@ -14,10 +16,10 @@ class OrderController {
             data: order
         });
     }
-    
+
     async show ({ params, response }) {
         const order = await Orders.find(params.id)
-        
+
         if (!order) {
             return response.json({
                 message: "order not found",
@@ -47,7 +49,7 @@ class OrderController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 200,
@@ -66,11 +68,11 @@ class OrderController {
 
         const cart = await Cart.find(cart_id)
         await cart.delete()
-        
-        const order = await Orders.create({ 
-            order_no, 
-            book_id, 
-            user_id, 
+
+        const order = await Orders.create({
+            order_no,
+            book_id,
+            user_id,
             price,
             quantity
         })
@@ -84,7 +86,7 @@ class OrderController {
 
     async destroy ({ params, request, response }) {
         const order = await Orders.find(params.id)
-        
+
         await order.delete()
 
         return response.json({
@@ -96,7 +98,7 @@ class OrderController {
 
     async update ({ params, request, response }) {
         const order = await Orders.find(params.id)
-       
+
         if (!order) {
             return response.status(404).json(null)
         }
@@ -111,7 +113,7 @@ class OrderController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 200,
@@ -123,7 +125,7 @@ class OrderController {
 
         order.price = orderInfo.price
         order.quantity = orderInfo.quantity
-       
+
         await order.save()
 
         return response.json({
@@ -131,20 +133,20 @@ class OrderController {
             status: 200,
             data: order
         });
-    
+
     }
 
     async getOrderCode ({ params, auth, view, response })
     {
         let order_no = params.orderCode
         let orders = await Orders.query().with('book').where('user_id',auth.user.id).where('order_no',params.orderCode).fetch()
-        
+
         orders = orders.toJSON()
-    
+
         let total = orders.reduce(function (sum, ord) {
             return sum + (ord.quantity * ord.price) ;
         }, 0);
-        
+
         if (orders.length == 0)
         {
             return view.render('pages.error404')
@@ -155,6 +157,40 @@ class OrderController {
         }
 
     }
+
+    async management ({ auth, view, response }) {
+      // get my books
+      const myBooks = await Database.from('books').where('created_by',auth.user.id).pluck('id')
+      let orders = await Orders.query().with('book').whereNot('user_id',auth.user.id).whereIn('book_id',myBooks).fetch()
+      orders = orders.toJSON()
+
+      let total = orders.reduce(function (sum, ord) {
+          return sum + (ord.quantity * ord.price) ;
+      }, 0);
+
+      let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+      cart = cart.toJSON()
+
+      return view.render('management.orders', { orders, total, cart })
+    }
+
+    async paid ({ params, response }) {
+      const order = await Orders.find(params.id)
+
+      if (!order) {
+          return response.status(404).json(null)
+      }
+      var today = new Date();
+      order.completed_at = today
+      await order.save()
+
+      return response.json({
+          message: "order updated",
+          status: 200,
+          data: order
+      });
+
+  }
 }
 
 module.exports = OrderController

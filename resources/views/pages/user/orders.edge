@@ -15,12 +15,13 @@
                                 <th class="product-price">Price</th>
                                 <th class="product-quantity">Quantity</th>
                                 <th class="product-subtotal">Total</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(!orders.length)
                                 <tr>
-                                    <td class="product-name" colspan="6"><strong>Order is empty</strong></td>
+                                    <td class="product-name" colspan="7"><strong>Order is empty</strong></td>
                                 </tr>
                             @endif
                             @each(item in orders)
@@ -31,6 +32,7 @@
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
                                 <td class="product-subtotal">{{ item.quantity * item.price }}</td>
+                                <td>{{ item.completed_at === null ? 'Waiting for payment' : 'Paid' }}</td>
                             </tr>
                             @endeach
                         </tbody>
@@ -38,6 +40,6 @@
                 </div>
             </div>
         </div>
-    </div>  
+    </div>
 </section>
 @endsection

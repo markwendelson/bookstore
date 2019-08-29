@@ -21,6 +21,7 @@ Route.get('/search', 'PageController.search').as('page.search')
 Route.get('/view/book/:id', 'PageController.singleItem').as('page.single-item')
 Route.get('/view/book/category/:id', 'PageController.viewByCategory').as('page.book-by-category')
 Route.get('/error', 'PageController.pageNotFound').as('page.notFound')
+Route.post('/check-available-quantity', 'PageController.checkAvailableQuantity').as('page.check-available-quantity')
 
 Route.group(()=> {
     Route.get('/login', 'AuthController.showLogin').as('auth.login').middleware('guest')
@@ -78,11 +79,12 @@ Route.group(()=> {
     Route.put(':id', 'OrderController.update').as('order.update')
 }).prefix('order')
 
-// cart 
+// cart
 Route.group(()=> {
     Route.get('list', 'CartController.index').as('cart.index')
     Route.get(':id', 'CartController.show').as('cart.show')
     Route.delete(':id', 'CartController.destroy').as('cart.destroy')
+    Route.delete('/delete', 'CartController.deleteMultiple').as('cart.deleteMultiple')
     Route.post('store', 'CartController.store').as('cart.store')
     Route.put(':id', 'CartController.update').as('cart.update')
 }).prefix('cart')
@@ -95,9 +97,11 @@ Route.group(()=> {
     Route.get('users', 'UserController.management').as('management.users')
     Route.get('users/search', 'UserController.search').as('user.search')
     Route.put('users/can_buy_and_sell/:id', 'UserController.updateBuyAndSell').as('user.can_buy_and_sell')
+    Route.get('orders', 'OrderController.management').as('management.order')
+    Route.put('orders/paid/:id', 'OrderController.paid').as('management.order.paid')
 }).prefix('management')
 
-// comment 
+// comment
 Route.group(()=> {
     Route.post('store', 'CommentController.store').as('comment.store')
 }).prefix('comment')

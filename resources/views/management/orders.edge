@@ -1,0 +1,144 @@
+@layout('master')
+@section('content')
+<section class="cart-main-area section-padding--lg mt-5 bg--white">
+    <div class="container" id="orders">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ol-lg-12">
+                <h3 class="account__title">Orders Management</h3>
+                <div class="table-content wnro__table table-responsive">
+                    <table>
+                        <thead>
+                            <tr class="title-top">
+                                <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Order No</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(!orders.length)
+                                <tr>
+                                    <td class="product-name" colspan="7"><strong>Order is empty</strong></td>
+                                </tr>
+                            @endif
+                            @each(item in orders)
+                            <tr>
+                                <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
+                                <td class="product-name"><a href="/account/orders/{{item.order_no}}">{{ item.order_no }}</a></td>
+                                <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
+                                <td class="product-price"><span class="amount">{{ item.price }}</span></td>
+                                <td class="product-quantity">{{ item.quantity}}</td>
+                                <td class="product-subtotal">{{ item.quantity * item.price }}</td>
+                                <td>{{ item.completed_at === null ? 'Waiting for payment' : 'Paid' }}
+                                  @if(item.completed_at === null)
+                                    <button v-on:click="markAsPaid({{item.id}})" class="btn btn-warning">Mark as Paid</button>
+                                  @endif
+                                </td>
+                            </tr>
+                            @endeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+@section('extra_scripts')
+<script type="text/javascript">
+    new Vue({
+        el: '#orders',
+            data () {
+                return {
+                }
+            },
+            mounted () {
+            },
+            computed: {
+            },
+            methods: {
+              markAsPaid(id) {
+                console.log('mark as paid...')
+                axios.put('management/orders/paid/'+id)
+                .then(function(){
+                  window.location.reload()
+                })
+              }
+            }
+    })
+</script>
+
+<script type="text/javascript">
+
+  $(document).ready(function () {
+      $('#check_all').on('click', function(e) {
+          console.log('checking')
+          if($(this).is(':checked',true))
+          {
+              $(".checkbox").prop('checked', true);
+          } else {
+              $(".checkbox").prop('checked',false);
+          }
+      });
+
+      $('.checkbox').on('click',function(){
+          if($('.checkbox:checked').length == $('.checkbox').length){
+              $('#check_all').prop('checked',true);
+          } else {
+              $('#check_all').prop('checked',false);
+          }
+      });
+
+      $('#delete-all').on('click', function(e) {
+          console.log('deleting...')
+          var idsArr = [];
+          $(".checkbox:checked").each(function() {
+              idsArr.push($(this).attr('data-id'));
+          });
+
+          if(idsArr.length <=0)
+          {
+              Swal.fire(
+                  'Please select atleast one record to delete.',
+                  'Failed to delete activity.',
+                  'error',
+              )
+          }  else {
+              Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                  if (result.value) {
+                      var strIds = idsArr.join(",");
+                      console.log(strIds)
+                      axios.delete('{{ route('cart.deleteMultiple') }}',{
+                          params: {
+                              ids:strIds
+                          }
+                      }).then(function(response){
+                          console.log(response)
+                          $(".checkbox:checked").each(function() {
+                                      $(this).parents("tr").remove();
+                                  });
+                          Swal.fire(
+                              response.data.message,
+                              'Successfully deleted.',
+                              response.data.status,
+                          );
+                      })
+                  }
+              })
+          }
+      });
+  });
+
+</script>
+@endsection

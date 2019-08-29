@@ -14,10 +14,10 @@ class CartController {
             data: cart
         });
     }
-    
+
     async show ({ params, response }) {
         const cart = await Cart.find(params.id)
-        
+
         if (!cart) {
             return response.json({
                 message: "cart not found",
@@ -44,7 +44,7 @@ class CartController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 'error',
@@ -69,9 +69,19 @@ class CartController {
 
         const user_id = auth.user.id
 
-        const cart = await Cart.create({ 
-            book_id, 
-            user_id, 
+        // check if exists in cart
+        const exist = await Cart.query().where('book_id',book_id).where('user_id',user_id).fetch()
+        if(exist) {
+          return response.json({
+            message: "Book already exists in cart",
+            status: 'error',
+            data: null
+        });
+        }
+
+        const cart = await Cart.create({
+            book_id,
+            user_id,
             quantity
         })
 
@@ -93,7 +103,7 @@ class CartController {
         const books = await Books.find(cart.book_id)
         books.quantity = books.quantity + cart.quantity
         await books.save()
-        
+
         await cart.delete()
 
         return response.json({
@@ -110,18 +120,18 @@ class CartController {
         }
 
         const validation = await validate(request.all(), rules)
-        
+
         if (validation.fails()) {
             session
             .withErrors(validation.messages())
-            
+
             return response.json({
                 message: validation.messages(),
                 status: 200,
                 data: null
             });
         }
-        
+
         const cartInfo = request.only(['quantity'])
 
         const book = await Books.find(cart.book_id)
@@ -145,7 +155,12 @@ class CartController {
             status: 'success',
             data: cart
         });
-    
+
+    }
+
+    async deleteMultiple ({ request, response }) {
+      const ids = request.only(['ids'])
+
     }
 }
 

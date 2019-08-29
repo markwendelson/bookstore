@@ -87,7 +87,7 @@ class PageController {
         const currentPage = request.get().page || 1
         const perPage = 10
         let categories = await Category.query().with('book').fetch()
-        
+
         let cart, books = null;
         books = await Books.query().where('category_id',params.id).paginate(currentPage,perPage)
 
@@ -99,6 +99,22 @@ class PageController {
         books = books.toJSON()
         categories = categories.toJSON()
         return view.render('pages.index', { categories, books, cart })
+    }
+
+    async checkAvailableQuantity ({ request, response }) {
+      const { book_id, quantity } = request.only([
+        'book_id',
+        'quantity',
+    ])
+      const book = await Books.findOrFail(book_id)
+
+      if(book.quantity < quantity) {
+        return response.json({
+              message: "Insufficient stock",
+              status: 'error',
+              data: book
+        })
+      }
     }
 }
 
