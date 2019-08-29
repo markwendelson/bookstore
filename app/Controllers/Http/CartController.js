@@ -63,7 +63,7 @@ class CartController {
             return response.json({
                 message: "No more available stock.",
                 status: 'error',
-                data: null
+                data: book
             });
         }
 
@@ -71,11 +71,11 @@ class CartController {
 
         // check if exists in cart
         const exist = await Cart.query().where('book_id',book_id).where('user_id',user_id).fetch()
-        if(exist) {
+        if(exist.rows.length) {
           return response.json({
             message: "Book already exists in cart",
             status: 'error',
-            data: null
+            data: exist
         });
         }
 
