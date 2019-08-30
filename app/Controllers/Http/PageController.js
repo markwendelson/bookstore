@@ -102,13 +102,16 @@ class PageController {
     }
 
     async checkAvailableQuantity ({ request, response }) {
-      const { book_id, quantity } = request.only([
+      const { book_id, quantity, cart_id } = request.only([
         'book_id',
         'quantity',
+        'cart_id'
     ])
+
+      const cart = await Cart.findOrFail(cart_id)
       const book = await Books.findOrFail(book_id)
 
-      if(book.quantity < quantity) {
+      if(book.quantity + cart.quantity < quantity) {
         return response.json({
               message: "Insufficient stock",
               status: 'error',

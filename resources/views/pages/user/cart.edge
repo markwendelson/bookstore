@@ -197,6 +197,7 @@
                 },
                 checkQuantity(cartId, bookId, quantity) {
                   axios.post('/check-available-quantity',{
+                      cart_id:cartId,
                       book_id:bookId,
                       quantity:quantity
                   })
