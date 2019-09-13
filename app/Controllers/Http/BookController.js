@@ -162,6 +162,7 @@ class BookController {
         book.category_id = bookInfo.category_id
         book.price = bookInfo.price
         book.discount = bookInfo.discount
+        book.quantity = bookInfo.quantity
        
         await book.save()
 
