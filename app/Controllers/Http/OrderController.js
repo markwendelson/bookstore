@@ -87,11 +87,16 @@ class OrderController {
     async destroy ({ params, request, response }) {
         const order = await Orders.find(params.id)
 
+        // update books quantity
+        const books = await Books.find(order.book_id)
+        books.quantity = books.quantity + order.quantity
+        await books.save()
+
         await order.delete()
 
         return response.json({
-            message: "order deleted",
-            status: 204,
+            message: "Book deleted from order",
+            status: 'success',
             data: null
         });
     }

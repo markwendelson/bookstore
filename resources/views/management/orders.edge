@@ -16,6 +16,7 @@
                                 <th class="product-quantity">Quantity</th>
                                 <th class="product-subtotal">Total</th>
                                 <th>Status</th>
+                                <th style="border-right:1px">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,9 +33,12 @@
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
                                 <td class="product-subtotal">{{ item.quantity * item.price }}</td>
-                                <td>{{ item.completed_at === null ? 'Waiting for payment' : 'Paid' }}
-                                  @if(item.completed_at === null)
+                                <td>{{ item.completed_at === null ? 'Waiting for payment' : 'Paid' }}</td>
+                                <td>
+                                    @if(item.completed_at === null)
                                     <button v-on:click="markAsPaid({{item.id}})" class="btn btn-warning">Mark as Paid</button>
+                                    <p>&nbsp</p>
+                                    <button v-on:click="removeItem({{item.id}})" class="btn btn-danger"><i class="zmdi zmdi-delete"></i> Remove</button>
                                   @endif
                                 </td>
                             </tr>
@@ -66,7 +70,51 @@
                 .then(function(){
                   window.location.reload()
                 })
-              }
+              },
+              removeItem(item) {
+                  Swal.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes, delete it!'
+                  })
+                  .then((result) => {
+                      if (result.value) {
+                          var app = this
+
+                          axios.delete('order/'+ item)
+                          .then(function(response){
+                              if (response.data.status == 'success') {
+                                  Swal.fire(
+                                      response.data.message,
+                                      'Successfully delete.',
+                                      response.data.status,
+                                  ).then(function(){
+                                    window.location.reload()
+                                  })
+                              }
+                              else if(response.data.status == 'error') {
+                                  Swal.fire(
+                                      response.data.message,
+                                      'Failed to delete order.',
+                                      response.data.status,
+                                  )
+                              }
+                          })
+                          .catch(function (response) {
+                              Swal.fire(
+                                  response.message,
+                                  'Failed to delete order.',
+                                  response.message,
+                              )
+                          })
+                      }
+                  })
+
+              },
             }
     })
 </script>
