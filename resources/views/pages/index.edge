@@ -9,8 +9,20 @@
         text-align:center;
     }
 </style>
+
+
+    {{--  <div class="slider-area brown__nav slider--15 slide__activiation slide__arrow01 owl-carousel owl-theme">
+
+        <div class="slide animation__style10 bg-image--6 ht__bradcaump__area align__center--left"></div>       
+        <div class="slide animation__style10 bg-image--7 ht__bradcaump__area align__center--left"></div>
+        <div class="slide animation__style10 bg-image--8 ht__bradcaump__area align__center--left"></div>
+        <div class="slide animation__style10 bg-image--9 ht__bradcaump__area align__center--left"></div>
+      
+    </div>  --}}
+
 <div class="ht__bradcaump__area bg-image--6">
 </div>
+
 <div id="app" class="page-shop-sidebar left--sidebar bg--white section-padding--lg">
     <div class="container">
         <div class="row">
@@ -35,7 +47,7 @@
                                 <a class="nav-item nav-link active" data-toggle="tab" href="#nav-grid" role="tab"><i class="fa fa-th"></i></a>
                                 <a class="nav-item nav-link" data-toggle="tab" href="#nav-list" role="tab"><i class="fa fa-list"></i></a>
                             </div>
-                            <p>Showing {{ books.page }} of {{ books.lastPage }} results</p>
+                            <p>Page {{ books.page }} of {{ books.lastPage }} result(s)</p>
                             <div class="orderby__wrapper" style="display:none">
                                 <span>Sort By</span>
                                 <select class="shot__byselect">
@@ -83,7 +95,9 @@
                                         </div>
                                     </div>
                                     <div class="product__content content--center">
-                                        <h4><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name}}</a></h4>
+                                        <h3><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name}}</a></h3>
+                                        <br>
+                                        <h4 class="old_prize"><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.author}}</a></h4>
                                         <ul class="prize d-flex">
                                             <li>Php {{ book.price - (book.price * (book.discount/100)) }}</li>
                                             <li class="old_prize">Php {{ book.price }}</li>
@@ -152,14 +166,14 @@
                                 </div>
                                 <div class="content">
                                     <h2><a href="{{ route('page.single-item',{id:book.id }) }}">{{ book.book_name }}</a></h2>
-                                    <ul class="rating d-flex">
-                                        <li class="on"><i class="fa fa-star-o"></i></li>
-                                        <li class="on"><i class="fa fa-star-o"></i></li>
-                                        <li class="on"><i class="fa fa-star-o"></i></li>
-                                        <li class="on"><i class="fa fa-star-o"></i></li>
-                                        <li><i class="fa fa-star-o"></i></li>
-                                        <li><i class="fa fa-star-o"></i></li>
-                                    </ul>
+                                    {{--  <ul class="rating d-flex">  --}}
+                                        {{--  <li class="on"><i class="fa fa-star-o"></i></li>  --}}
+                                        {{--  <li class="on"><i class="fa fa-star-o"></i></li>  --}}
+                                        {{--  <li class="on"><i class="fa fa-star-o"></i></li>  --}}
+                                        {{--  <li class="on"><i class="fa fa-star-o"></i></li>  --}}
+                                        {{--  <li><i class="fa fa-star-o"></i></li>  --}}
+                                        {{--  <li><i class="fa fa-star-o"></i></li>  --}}
+                                    {{--  </ul>  --}}
                                     <ul class="prize__box">
                                         <li>Php {{ book.price - (book.price * (book.discount/100)) }}</li>
                                         <li class="old__prize">Php {{ book.price }}</li>

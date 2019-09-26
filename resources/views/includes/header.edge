@@ -25,15 +25,13 @@
                                     <span>close</span>
                                 </div>
                                 <div class="items-total d-flex justify-content-between">
-                                    <span>{{ cart.length }} item</span>
-                                    <span>Cart Subtotal</span>
+                                    <h6>{{ cart.length }} item(s)</h6>
+                                    
                                 </div>
-                                <div class="total_amount text-right">
-                                    <span>Php </span>
-                                </div>
-                                <div class="mini_action checkout">
-                                    <a class="checkout__btn" href="{{ route('user.cart') }}">Go to Checkout</a>
-                                </div>
+                                {{--  <div class="total_amount text-right">  --}}
+                                    {{--  <span>Php </span>  --}}
+                                {{--  </div>  --}}
+                               
                                 <div id="header-cart" class="single__items">
                                     @if(!cart.length)
                                     <p>Cart is empty!</p>
@@ -42,7 +40,7 @@
                                     <div class="miniproduct">
                                         <div class="item01 d-flex">
                                             <div class="thumb">
-                                                <a href="{{ route('page.single-item',{id:item.book.id }) }}"><img src="/shopper/images/product/sm-img/1.jpg" alt="product images"></a>
+                                                    <a href="{{ route('page.single-item',{id:item.book.id }) }}"><img src="/uploads/{{ item.book.image }}" alt="item book img"></a>
                                             </div>
                                             <div class="content">
                                                 <h6><a href="{{ route('page.single-item',{id:item.book.id }) }}">{{ item.book.book_name }}</a></h6>
@@ -62,9 +60,12 @@
                                     </div>
                                     @endeach
                                 </div>
-                                <div class="mini_action cart">
-                                    <a class="cart__btn" href="{{ route('user.cart') }}">View and edit cart</a>
+                                <div class="mini_action checkout">
+                                    <a class="checkout__btn" href="{{ route('user.cart') }}">Go to Checkout</a>
                                 </div>
+                                {{--  <div class="mini_action cart">  --}}
+                                    {{--  <a class="cart__btn" href="{{ route('user.cart') }}">View and edit cart</a>  --}}
+                                {{--  </div>  --}}
                             </div>
                         </div>
                         <!-- End Shopping Cart -->
@@ -86,6 +87,17 @@
                                                     <span><a href="{{ route('user.order') }}">My Orders</a></span>
                                                     <span><a href="{{ route('management.order') }}">Orders</a></span>
                                                 @endif
+                                                @if(auth.user.is_admin)
+                                                {{--  <strong class="label switcher-label">  --}}
+                                                    <span><a href="{{ route('management.books') }}">Books</a></span>
+                                                {{--  </strong>  --}}
+                                                {{--  <strong class="label switcher-label">  --}}
+                                                    <span><a href="{{ route('management.category') }}">Category</a></span>
+                                                {{--  </strong>  --}}
+                                                {{--  <strong class="label switcher-label">  --}}
+                                                    <span><a href="{{ route('management.users') }}">Users</a></span>
+                                                {{--  </strong>  --}}
+                                            @endif
                                                 <span><a href="{{ route('auth.changepassword') }}">Change Password</a></span>
                                                 <span><a href="{{ route('auth.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></span>
                                                 <form id="logout-form" action="{{ route('auth.logout') }}" method="post" style="display: none;">
@@ -98,17 +110,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if(auth.user.is_admin)
-                                        <strong class="label switcher-label">
-                                            <span><a href="{{ route('management.books') }}">Books</a></span>
-                                        </strong>
-                                        <strong class="label switcher-label">
-                                            <span><a href="{{ route('management.category') }}">Category</a></span>
-                                        </strong>
-                                        <strong class="label switcher-label">
-                                            <span><a href="{{ route('management.users') }}">Users</a></span>
-                                        </strong>
-                                    @endif
+                                  
                                 </div>
                             </div>
                         </div>
