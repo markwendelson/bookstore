@@ -16,7 +16,7 @@ class BookController {
             data: book
         });
     }
-    
+
     async show ({ params, response }) {
         const book = await Books.find(params.id)
         await book.load('category')
@@ -43,6 +43,7 @@ class BookController {
 
     async store ({ request, session, response, auth }) {
         const rules = {
+            isbn: 'required',
             book_name: 'required',
             description: 'required',
             author: 'required',
@@ -54,7 +55,7 @@ class BookController {
             types: ['image'],
             size: '5mb'
           })
-          
+
         var imageFileName = `${new Date().getTime()}.${imageFile.subtype}`
         imageFile =  await imageFile.move(Helpers.publicPath('uploads'), {
             name: imageFileName
@@ -65,15 +66,16 @@ class BookController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 'error',
                 data: null
             });
         }
-  
-        const { book_name, description, author, category_id, price, quantity, discount } = request.only([
+
+        const { isbn, book_name, description, author, category_id, price, quantity, discount } = request.only([
+            'isbn',
             'book_name',
             'description',
             'author',
@@ -82,17 +84,18 @@ class BookController {
             'quantity',
             'discount',
         ])
-        
+
         var image = imageFileName
 
         var created_by = auth.user.id
 
-        const book = await Books.create({ 
-            book_name, 
-            description, 
-            author, 
-            category_id, 
-            price, 
+        const book = await Books.create({
+            isbn,
+            book_name,
+            description,
+            author,
+            category_id,
+            price,
             quantity,
             discount,
             image,
@@ -108,19 +111,19 @@ class BookController {
 
     async destroy ({ params, request, response }) {
         const book = await Books.find(params.id)
-        
+
         await book.delete()
 
         return response.json({
             message: "Book deleted",
             status: 'success',
             data: null
-        }); 
+        });
     }
 
     async update ({ params, request, session, response }) {
         const book = await Books.find(params.id)
-       
+
         if (!book) {
             return response.status(404).json(null)
         }
@@ -138,7 +141,7 @@ class BookController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 200,
@@ -163,7 +166,7 @@ class BookController {
         book.price = bookInfo.price
         book.discount = bookInfo.discount
         book.quantity = bookInfo.quantity
-       
+
         await book.save()
 
         return response.json({
@@ -188,7 +191,7 @@ class BookController {
         let books = await Books.query().with('category').with('user')
                                 .where('book_name','LIKE','%'+filter_val+'%')
                                 .fetch()
-        
+
         books = books.toJSON()
 
         return view.render('management.books', { books })

@@ -21,7 +21,7 @@
                     <div class="col-lg-6 col-12">
                         <div class="account__form pt-0 pl-0 pb-0 pr-0 mb-1 mt-0 pull-right">
                             <div class="form__btn">
-                                @if(!auth.user.is_admin) 
+                                @if(!auth.user.is_admin)
                                     <a href="/book/add" onclick="event.preventDefault();" v-on:click="addModal">Add Book</a>
                                 @endif
                                 {{--  <a href="{{ route('category.list') }}">View Book Categories</a>  --}}
@@ -53,7 +53,7 @@
                                 @if(auth.user.is_admin)
                                     <th class="product-name" style="border-right:1px">Added By</th>
                                 @endif
-                                @if(!auth.user.is_admin) 
+                                @if(!auth.user.is_admin)
                                     <th class="product-name" style="border-right:1px"></th>
                                 @endif
                             </tr>
@@ -73,7 +73,11 @@
                                     <a href="#"><img src="/uploads/{{ item.image }}" alt="product img"></a>
                                 @endif
                             </td>
-                                <td class="product-name"><a href="#">{{ item.book_name }}</a></td>
+                                <td class="product-name">
+                                  <a href="#">{{ item.book_name }}</a>
+                                  <p>{{ item.isbn }}</p>
+                                  <p>{{ item.author }}</p>
+                                </td>
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-price"><span class="amount">{{ item.discount }}%</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
@@ -81,7 +85,7 @@
                                 @if(auth.user.is_admin)
                                     <td class="product-name">{{ item.user.firstname + ' ' + item.user.lastname  || ''}}</td>
                                 @endif
-                                @if(!auth.user.is_admin) 
+                                @if(!auth.user.is_admin)
                                     <td class="product-name">
                                         <a href="{{ route('book.show', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="editModal({{ item.id }})">Edit</a>
                                         <a href="{{ route('book.delete', {id:item.id}) }}" onclick="event.preventDefault();" v-on:click="deleteBook({{ item.id }})">Remove</a>
@@ -102,6 +106,14 @@
             </div>
             <div class="col-lg-12 col-12" style="margin-top:90px;background: white;padding-top:20px;padding-bottom:50px">
                 <div class="contact-form-wrap">
+                    <div class="single-contact-form space-between">
+                        <div class="row col-lg-12">
+                            <div class="col-md-12">
+                                <label class="pull-left ml-2">ISBN</label>
+                                <input type="text" name="isbn" v-model="isbn" placeholder="ISBN*" required>
+                            </div>
+                        </div>
+                    </div>
                         <div class="single-contact-form space-between">
                             <div class="row col-lg-12">
                                 <div class="col-md-6">
@@ -156,7 +168,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Image</label>
-                                    <input type="file" id="image" name="image" @onchange="image">
+                                    <input type="file" id="image" name="image" @onchange="image" required>
                                 </div>
                             </div>
                         </div>
@@ -165,14 +177,14 @@
                             <a href="{{ route('book.store') }}" onclick="event.preventDefault();" v-on:click="submit">@{{ state === 'add' ? 'Save' : 'Update' }}</a>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
             <div class="close__wrap" v-on:click="closeModal">
                 <span>close</span>
             </div>
         </div>
         <!-- End Book form Popup -->
-    </div>  
+    </div>
 </section>
 
 @endsection
@@ -184,6 +196,7 @@
             data () {
                 return {
                     id: '{{ id }}',
+                    isbn: '{{ isbn }}',
                     book_name: '{{ book_name }}',
                     description: '{{ description }}',
                     author: '{{ author }}',
@@ -194,10 +207,21 @@
                     image: '{{ image }}',
                     state: null,
                     filter_val: '',
+                    isbn_valid: 0
                 }
             },
             mounted () {
-                
+
+            },
+            computed: {
+              isbnInput() {
+                  return this.isbn
+              }
+            },
+            watch: {
+                isbnInput() {
+                    this.getBookDetails()
+                }
             },
             methods: {
                 submit() {
@@ -264,6 +288,7 @@
                     axios.get('book/' +id)
                     .then(function(response){
                         app.id = id
+                        app.isbn = response.data.data.book.isbn
                         app.book_name = response.data.data.book.book_name
                         app.description = response.data.data.book.description
                         app.author = response.data.data.book.author
@@ -278,56 +303,67 @@
                     console.log(app.state)
                 },
                 saveBook() {
-                    var app = this
-                    console.log('book save')
-                    var data = new FormData
-                    var imageFile = document.getElementById("image").files[0]
-                    if(!(imageFile == undefined))
+                    if(!this.isbn_valid)
                     {
-                        data.append('image', imageFile, imageFile.name)
+                      Swal.fire(
+                          'ISBN invalid',
+                          'Failed to add book.',
+                          'error',
+                      )
+                    } else {
+                      var app = this
+                      console.log('book save')
+                      var data = new FormData
+                      var imageFile = document.getElementById("image").files[0]
+                      if(!(imageFile == undefined))
+                      {
+                          data.append('image', imageFile, imageFile.name)
+                      }
+                      data.append('name', app.name)
+                      data.append('isbn', app.isbn)
+                      data.append('book_name', app.book_name)
+                      data.append('description', app.description)
+                      data.append('author', app.author)
+                      data.append('category_id', app.category)
+                      data.append('price', app.price)
+                      data.append('discount', app.discount)
+                      data.append('quantity', app.quantity)
+                      var settings = { headers: { 'content-type': 'multipart/form-data' } }
+                      console.log(imageFile)
+                      axios.post('{{ route('book.store') }}', data, settings )
+                      .then(function(response){
+                          console.log(response)
+                          if (response.data.status == 'success') {
+                              Swal.fire(
+                                  response.data.message,
+                                  'Successfully added.',
+                                  response.data.status,
+                              ).then(function(){
+                                  window.location = '{{ route('user.books') }}'
+                              })
+                          }
+                          else if(response.data.status == 'error') {
+                              Swal.fire(
+                                  response.data.message,
+                                  'Failed to add book.',
+                                  response.data.status,
+                              )
+                          }
+                      })
+                      .catch(function (response) {
+                          console.log(response)
+                          // Swal.fire(
+                          //     response.message,
+                          //     'Failed to add book.',
+                          //     response.message,
+                          // )
+                      })
                     }
-                    data.append('name', app.name)
-                    data.append('book_name', app.book_name)
-                    data.append('description', app.description)
-                    data.append('author', app.author)
-                    data.append('category_id', app.category)
-                    data.append('price', app.price)
-                    data.append('discount', app.discount)
-                    data.append('quantity', app.quantity)
-                    var settings = { headers: { 'content-type': 'multipart/form-data' } }
-                    console.log(imageFile)
-                    axios.post('{{ route('book.store') }}', data, settings )
-                    .then(function(response){
-                        console.log(response)
-                        if (response.data.status == 'success') {
-                            Swal.fire(
-                                response.data.message,
-                                'Successfully added.',
-                                response.data.status,
-                            ).then(function(){
-                                window.location = '{{ route('user.books') }}'
-                            })
-                        }
-                        else if(response.data.status == 'error') {
-                            Swal.fire(
-                                response.data.message,
-                                'Failed to add book.',
-                                response.data.status,
-                            )
-                        }
-                    })
-                    .catch(function (response) {
-                        console.log(response)
-                        // Swal.fire(
-                        //     response.message,
-                        //     'Failed to add book.',
-                        //     response.message,
-                        // )
-                    })
                 },
                 updateBook() {
                     var app = this
                     axios.put('book/'+ app.id,{
+                        isbn: app.isbn,
                         book_name: app.book_name,
                         description: app.description,
                         author: app.author,
@@ -370,6 +406,36 @@
                 },
                 search() {
                     window.location = "{{ route('book.search') }}?q="+this.filter_val
+                },
+                getBookDetails() {
+                  var app = this
+                  let isbn = app.isbn
+                  if(!isbn=='')
+                  {
+                    var url = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn;
+
+                    axios.get(url)
+                    .then(function(response){
+                      let results = response.data
+                      if (results.totalItems) {
+
+                      // There'll be only 1 book per ISBN
+                      var book = results.items[0];
+
+                      app.book_name = (book["volumeInfo"]["title"]);
+                      app.description = (book["volumeInfo"]["subtitle"]);
+                      app.author = (book["volumeInfo"]["authors"]);
+                      app.isbn_valid = 1;
+                      }
+
+                    })
+
+                  } else {
+                    app.book_name = '';
+                    app.description = '';
+                    app.author = '';
+                    app.isbn_valid = 0;
+                  }
                 }
             }
     })
