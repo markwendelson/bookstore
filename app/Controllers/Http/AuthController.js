@@ -45,7 +45,7 @@ class AuthController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 'error',
@@ -97,7 +97,7 @@ class AuthController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 200,
@@ -108,7 +108,14 @@ class AuthController {
 
         const user = await auth.attempt(email, password)
 
-        // return response.route('page.index')
+        if (!user.can_buy_and_sell) {
+          await auth.logout()
+          return response.json({
+              message: 'Invalid login.',
+              status: 'error',
+          });
+        }
+
         return response.json({
             message: 'Successfuly login.',
             status: 'success',
@@ -126,7 +133,7 @@ class AuthController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 'error',
@@ -145,10 +152,10 @@ class AuthController {
             });
         }
         user.password = userInfo.password
-       
+
 
         await user.save()
-        
+
         return response.json({
             message: 'Password changed successfully.',
             status: 'success',
