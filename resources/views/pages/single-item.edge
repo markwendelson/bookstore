@@ -41,7 +41,7 @@
                                         @if(!auth.user.is_admin && auth.user.can_buy_and_sell)
                                     <span>Qty</span>
                                     <input id="qty" class="input-text qty" name="qty" min="1" value="1" title="Qty" type="number" v-model="quantity">
-                                   
+
                                     <div class="addtocart__actions">
                                         <button class="tocart" type="submit" v-on:click="addToCart({{ book.id }})" title="Add to Cart">Add to Cart</button>
                                     </div>
@@ -312,13 +312,13 @@
                     })
                     .then( function(response){
                         if (response.data.status == 'success') {
-                            Swal.fire(
-                                response.data.message,
-                                'Successfully added a comment.',
-                                response.data.status,
-                            ).then(function(){
+                            // Swal.fire(
+                            //     response.data.message,
+                            //     'Successfully added a comment.',
+                            //     response.data.status,
+                            // ).then(function(){
                                 window.location.reload()
-                            })
+                            // })
                         }
                         else if(response.data.status == 'error') {
                             Swal.fire(
