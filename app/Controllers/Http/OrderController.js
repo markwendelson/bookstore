@@ -152,13 +152,16 @@ class OrderController {
             return sum + (ord.quantity * ord.price) ;
         }, 0);
 
+        let cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+        cart = cart.toJSON()
+
         if (orders.length == 0)
         {
             return view.render('pages.error404')
         }
         else
         {
-            return view.render('pages.user.checkout', { order_no, orders, total })
+            return view.render('pages.user.checkout', { order_no, orders, total, cart })
         }
 
     }
