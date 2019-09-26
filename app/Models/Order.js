@@ -8,8 +8,8 @@ class Order extends Model {
         return this.hasOne('App/Models/Book', 'book_id', 'id')
     }
 
-    users () {
-        return this.belongsToMany('App/Models/User', 'user_id', 'id')
+    buyer () {
+        return this.belongsTo('App/Models/User', 'user_id', 'id')
     }
 }
 

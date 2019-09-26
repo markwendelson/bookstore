@@ -22,7 +22,7 @@ class UserController {
         return response.status(200).json(user)
     }
 
-    async index ({ response }) {      
+    async index ({ response }) {
         const users = await User.all()
         return response.status(200).json(users)
     }
@@ -37,7 +37,7 @@ class UserController {
             message: "User deleted",
             status: 'success',
             data: null
-        }); 
+        });
     }
 
     async update ({ auth, request, response, session }) {
@@ -53,7 +53,7 @@ class UserController {
         if (validation.fails()) {
             session
               .withErrors(validation.messages())
-      
+
             return response.json({
                 message: validation.messages(),
                 status: 'error',
@@ -80,7 +80,7 @@ class UserController {
         user.middlename = userInfo.middlename
         user.lastname = userInfo.lastname
         user.contact_no = userInfo.contact_no
-       
+
         await user.save()
 
         return response.json({
@@ -89,12 +89,12 @@ class UserController {
             data: user
         });
     }
-    
+
     async userCart ({ view, auth }) {
         const order_number = randomstring.generate(10);
         let cart = await Cart.query().with('book').where('user_id', auth.user.id).fetch()
         cart = cart.toJSON()
-        
+
         let total = cart.reduce(function (sum, crt) {
             return sum + (crt.quantity * (crt.book.price - (crt.book.price * (crt.book.discount/100)))) ;
         }, 0);
@@ -103,9 +103,9 @@ class UserController {
     }
 
     async userOrders ({ view, auth }) {
-        let orders = await Orders.query().with('book').where('user_id',auth.user.id).fetch()
+        let orders = await Orders.query().with('book').with('buyer').with('book.user').where('user_id',auth.user.id).fetch()
         orders = orders.toJSON()
-        
+
         let total = orders.reduce(function (sum, ord) {
             return sum + (ord.quantity * ord.price) ;
         }, 0);
@@ -161,7 +161,7 @@ class UserController {
 
     async updateBuyAndSell ({ params, request, response }) {
         const user = await User.find(params.id)
-        
+
         if (!user) {
             return response.json({
                 message: 'Invalid user.',
@@ -173,13 +173,13 @@ class UserController {
         user.can_buy_and_sell = can_buy_and_sell
 
         var msg = can_buy_and_sell == 1 ? 'Successfully updated account. User can now buy and sell' : 'Successfully updated account. User is disabled for buy and sell'
-       
+
         await user.save()
 
         const accountSid = 'ACac9086c2543bda7a2ead6715680b2923';
         const authToken = '5e3b5032ad5bdf3ff803960950fd979e';
         const client = require('twilio')(accountSid, authToken);
-        
+
         if ((user.can_buy_and_sell) && (user.contact_no) ) {
             client.messages
             .create({
@@ -212,7 +212,7 @@ class UserController {
                                 .orWhere('lastname',filter_val)
                                 .orWhere('email',filter_val)
                                 .fetch()
-        
+
         users = users.toJSON()
 
         return view.render('management.users', { users })

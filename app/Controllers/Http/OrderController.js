@@ -169,7 +169,7 @@ class OrderController {
     async management ({ auth, view, response }) {
       // get my books
       const myBooks = await Database.from('books').where('created_by',auth.user.id).pluck('id')
-      let orders = await Orders.query().with('book').whereNot('user_id',auth.user.id).whereIn('book_id',myBooks).fetch()
+      let orders = await Orders.query().with('book').with('buyer').whereNot('user_id',auth.user.id).whereIn('book_id',myBooks).fetch()
       orders = orders.toJSON()
 
       let total = orders.reduce(function (sum, ord) {

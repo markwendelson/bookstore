@@ -29,7 +29,11 @@
                             <tr>
                                 <td class="product-thumbnail"><a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a></td>
                                 <td class="product-name"><a href="/account/orders/{{item.order_no}}">{{ item.order_no }}</a></td>
-                                <td class="product-name"><a href="#">{{ item.book.book_name }}</a></td>
+                                <td class="product-name">
+                                  <a href="#">{{ item.book.book_name }}</a>
+                                  <p>Buyer Name: {{ item.buyer.firstname + ' ' + item.buyer.lastname}}</p>
+                                  <p>Buyer Contact No: +63{{ item.buyer.contact_no }}</p>
+                                </td>
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
                                 <td class="product-quantity">{{ item.quantity}}</td>
                                 <td class="product-subtotal">{{ item.quantity * item.price }}</td>
