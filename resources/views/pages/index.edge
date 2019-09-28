@@ -13,11 +13,11 @@
 
     {{--  <div class="slider-area brown__nav slider--15 slide__activiation slide__arrow01 owl-carousel owl-theme">
 
-        <div class="slide animation__style10 bg-image--6 ht__bradcaump__area align__center--left"></div>       
+        <div class="slide animation__style10 bg-image--6 ht__bradcaump__area align__center--left"></div>
         <div class="slide animation__style10 bg-image--7 ht__bradcaump__area align__center--left"></div>
         <div class="slide animation__style10 bg-image--8 ht__bradcaump__area align__center--left"></div>
         <div class="slide animation__style10 bg-image--9 ht__bradcaump__area align__center--left"></div>
-      
+
     </div>  --}}
 
 <div class="ht__bradcaump__area bg-image--6">
@@ -36,6 +36,9 @@
                                     >{{ category.category }} <span>({{ category.book.length }})</span></a></li>
                             @endeach
                         </ul>
+                    </aside>
+                    <aside class="wedget__categories poroduct--cat">
+                        <h3 class="wedget__title"><a href="{{ route('page.latest') }}">Latest Books</a></h3>
                     </aside>
                 </div>
             </div>
