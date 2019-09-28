@@ -46,7 +46,7 @@
                                             <input type="hidden" id="price[]" v-text="">
                                         </td>
                                         <td class="product-quantity">
-                                            <input id="quantity[]" type="number" min="1" v-model="item.quantity" v-on:change="checkQuantity(item.id, item.book_id, item.quantity)">
+                                            <input id="quantity[]" type="number" min="1" v-model="item.quantity" v-on:change="checkQuantity(item.id, item.book_id, item.quantity)" v-on:keypress="restrictNegative">
                                         </td>
                                         <td class="product-subtotal">@{{ item.quantity * (item.book.price - (item.book.price * (item.book.discount/100))) }}</td>
                                         <td class="product-remove"><a href="cart/remove" onclick="event.preventDefault();" v-on:click="removeItem(item.id)">X</a></td>
@@ -196,6 +196,17 @@
 
                 },
                 checkQuantity(cartId, bookId, quantity) {
+                  if (quantity == 0) {
+                    Swal.fire(
+                          'Quantity required',
+                          'Quantity required',
+                          'error',
+                      ).then(function(){
+                        window.location.reload()
+                      })
+                      return
+                  }
+
                   axios.post('/check-available-quantity',{
                       cart_id:cartId,
                       book_id:bookId,
@@ -220,6 +231,10 @@
                 },
                 viewBook(bookId) {
                     window.location = '/view/book/'+bookId
+                },
+                restrictNegative(e) {
+                  var inputKeyCode = e.keyCode ? e.keyCode : e.which;
+                  if (inputKeyCode == 45) e.preventDefault();
                 }
             }
     })
