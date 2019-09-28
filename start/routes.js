@@ -17,6 +17,7 @@
 const Route = use('Route')
 
 Route.get('/', 'PageController.index').as('page.index')
+Route.get('/latest', 'PageController.latest').as('page.latest')
 Route.get('/search', 'PageController.search').as('page.search')
 Route.get('/view/book/:id', 'PageController.singleItem').as('page.single-item')
 Route.get('/view/book/category/:id', 'PageController.viewByCategory').as('page.book-by-category')

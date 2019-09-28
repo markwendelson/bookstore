@@ -26,6 +26,27 @@ class PageController {
         return view.render('pages.index', { categories, books, cart })
     }
 
+    async latest ({ view, request, response, auth }) {
+      const currentPage = request.get().page || 1
+      const perPage = 10
+      let categories = await Category.query().with('book').fetch()
+      let books, cart = null
+
+      if(auth.user == null)
+      {
+          books = await Books.query().whereNot('quantity',0).orderBy('created_at', 'DESC').paginate(currentPage,perPage)
+      }
+      else
+      {
+          books = await Books.query().whereNot('created_by',auth.user.id).whereNot('quantity',0).orderBy('created_at', 'DESC').paginate(currentPage,perPage)
+          cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+          cart = cart.toJSON()
+      }
+      books = books.toJSON()
+      categories = categories.toJSON()
+      return view.render('pages.index', { categories, books, cart })
+  }
+
     async singleItem ({ params, view, auth, response }) {
         let categories = await Category.query().with('book').fetch()
         let book = await Books.findOrFail(params.id)
