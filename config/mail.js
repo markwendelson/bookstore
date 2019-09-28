@@ -29,8 +29,8 @@ module.exports = {
     host: 'smtp.mailtrap.io',
     secure: false,
     auth: {
-      user: 'bd1ad9a66bb8f2',
-      pass: 'a426505748ccd4'
+      user: '9ca5066018402a',
+      pass: 'e0bbd73bf18ed0'
     },
     maxConnections: 5,
     maxMessages: 100,
