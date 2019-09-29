@@ -68,14 +68,14 @@
                             <tr>
                             <td class="product-thumbnail">
                                 @if(item.image == null)
-                                    <a href="#"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a>
+                                    <a href="{{ route('user.book.comments',{id:item.id}) }}"><img src="/shopper/images/product/sm-3/1.jpg" alt="product img"></a>
                                 @else
-                                    <a href="#"><img src="/uploads/{{ item.image }}" alt="product img"></a>
+                                    <a href="{{ route('user.book.comments',{id:item.id}) }}"><img src="/uploads/{{ item.image }}" alt="product img"></a>
                                 @endif
                             </td>
                                 <td class="product-name">
-                                  <a href="#">{{ item.book_name }}</a>
-                                  <p>{{ item.isbn }}</p>
+                                  <a href="{{ route('user.book.comments',{id:item.id}) }}">{{ item.book_name }}</a>
+                                  <p>{{ item.isbn || '' }}</p>
                                   <p>{{ item.author }}</p>
                                 </td>
                                 <td class="product-price"><span class="amount">{{ item.price }}</span></td>
@@ -110,7 +110,7 @@
                         <div class="row col-lg-12">
                             <div class="col-md-12">
                                 <label class="pull-left ml-2">ISBN</label>
-                                <input type="text" name="isbn" v-model="isbn" placeholder="ISBN*" required>
+                                <input type="text" name="isbn" v-model="isbn" placeholder="ISBN*" required />
                             </div>
                         </div>
                     </div>
@@ -118,11 +118,11 @@
                             <div class="row col-lg-12">
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Name</label>
-                                    <input type="text" name="book_name" v-model="book_name" placeholder="Book Name*">
+                                    <input type="text" name="book_name" v-model="book_name" placeholder="Book Name*" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Author</label>
-                                    <input type="text" name="author" v-model="author" placeholder="Book Author*">
+                                    <input type="text" name="author" v-model="author" placeholder="Book Author*" />
                                 </div>
                             </div>
                         </div>
@@ -152,11 +152,11 @@
                             <div class="row col-lg-12">
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Price</label>
-                                    <input type="text" name="price" v-model="price" placeholder="Book Price">
+                                    <input type="text" name="price" v-model="price" placeholder="Book Price" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Quantity</label>
-                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity">
+                                    <input type="text" name="quantity" v-model="quantity" placeholder="Book Quantity" />
                                 </div>
                             </div>
                         </div>
@@ -164,11 +164,15 @@
                             <div class="row col-lg-12">
                                 <div class="col-md-6">
                                     <label class="pull-left ml-2">Book Discount</label>
-                                    <input type="text" name="discount" v-model="discount" placeholder="Book Discount">
+                                    <input type="text" name="discount" v-model="discount" placeholder="Book Discount" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="pull-left ml-2">Image</label>
-                                    <input type="file" id="image" name="image" @onchange="image" required>
+                                    <label class="pull-left ml-2">Cover Image</label>
+                                    <input type="file" id="image" name="image" @onchange="image" required accept="image/*" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="pull-left ml-2">Receipt</label>
+                                    <input type="file" id="imageReceipt" name="imageReceipt" @onchange="image" accept="image/*" />
                                 </div>
                             </div>
                         </div>
@@ -318,6 +322,11 @@
                       if(!(imageFile == undefined))
                       {
                           data.append('image', imageFile, imageFile.name)
+                      }
+                      var receiptFile = document.getElementById("imageReceipt").files[0]
+                      if(!(receiptFile == undefined))
+                      {
+                          data.append('imageReceipt', receiptFile, receiptFile.name)
                       }
                       data.append('name', app.name)
                       data.append('isbn', app.isbn)

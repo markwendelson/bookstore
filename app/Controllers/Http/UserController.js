@@ -152,6 +152,33 @@ class UserController {
         return view.render('management.books', { books, categories, cart })
     }
 
+    async userBookComment ({ view, auth, params, response }) {
+      let categories = await Category.query().with('book').fetch()
+        let book = await Book.findOrFail(params.id)
+        await book.load('category')
+        await book.load('comments')
+        book = book.toJSON()
+        categories = categories.toJSON()
+
+        let latest, cart = null;
+        if (auth.user == null){
+            latest = await Book.query().orderBy('created_at', 'DESC').first()
+        } else {
+            latest = await Book.query().orderBy('created_at', 'DESC').first()
+            cart = await Cart.query().with('book').where('user_id',auth.user.id).fetch()
+            cart = cart.toJSON()
+        }
+        latest = latest.toJSON()
+
+        let relatedProducts = await Book.query().where('category_id', book.category_id || 0).whereNot('id',params.id)
+                            .orderBy('created_at', 'DESC')
+                            .limit(3)
+                            .fetch()
+        relatedProducts = relatedProducts.toJSON()
+        // return response.json({ relatedProducts })
+        return view.render('pages.book-comments', { categories, book, latest, cart, relatedProducts })
+  }
+
     async management ({ view }) {
         let users = await User.all()
         users = users.toJSON()

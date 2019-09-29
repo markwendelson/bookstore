@@ -51,6 +51,7 @@ class BookController {
             quantity: 'required'
         }
 
+        // book image
         let imageFile = request.file('image', {
             types: ['image'],
             size: '5mb'
@@ -59,6 +60,17 @@ class BookController {
         var imageFileName = `${new Date().getTime()}.${imageFile.subtype}`
         imageFile =  await imageFile.move(Helpers.publicPath('uploads'), {
             name: imageFileName
+        })
+
+        // book o.r image
+        let imageFileReceipt = request.file('imageReceipt', {
+          types: ['image'],
+          size: '5mb'
+        })
+
+        var imageFileReceiptName = `${new Date().getTime()}.${imageFileReceipt.subtype}`
+        imageFileReceipt =  await imageFileReceipt.move(Helpers.publicPath('uploads'), {
+            name: imageFileReceiptName
         })
 
         const validation = await validate(request.all(), rules)
@@ -86,6 +98,7 @@ class BookController {
         ])
 
         var image = imageFileName
+        var image_receipt = imageFileReceiptName
 
         var created_by = auth.user.id
 
@@ -99,6 +112,7 @@ class BookController {
             quantity,
             discount,
             image,
+            image_receipt,
             created_by,
          })
 

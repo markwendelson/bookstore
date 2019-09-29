@@ -19,11 +19,11 @@
                             <div class="wn__fotorama__wrapper">
                                 <div class="fotorama wn__fotorama__action" data-nav="thumbs">
                                     @if(book.image == null)
-                                      <a href="1.jpg"><img src="/shopper/images/product/1.jpg" alt=""></a>
-                                      <a href="1.jpg"><img src="/shopper/images/product/1.jpg" alt=""></a>
+                                      <a href="#"><img src="/shopper/images/product/1.jpg" alt=""></a>
+                                      <a href="#"><img src="/shopper/images/product/1.jpg" alt=""></a>
                                     @else
                                         {{--  <div class="img">  --}}
-                                            <a href="{{ book.image }}"><img src="/uploads/{{ book.image }}" alt="" alt="" style="height:565px;width:450px;"></a>
+                                            <a href="{{ book.image }}"><img src="/uploads/{{ book.image }}" alt="" style="height:565px;width:450px;"></a>
                                             <a href="{{ book.image_receipt }}"><img src="/uploads/{{ book.image_receipt }}" alt="" style="height:565px;width:450px;"></a>
                                         {{--  </div>  --}}
                                     @endif
@@ -38,16 +38,6 @@
                                 </div>
                                 <div class="product__overview">
                                     <p>{{ book.description }}</p>
-                                </div>
-                                <div class="box-tocart d-flex">
-                                        @if(!auth.user.is_admin && auth.user.can_buy_and_sell)
-                                    <span>Qty</span>
-                                    <input id="qty" class="input-text qty" name="qty" min="1" value="1" title="Qty" type="number" v-model="quantity">
-
-                                    <div class="addtocart__actions">
-                                        <button class="tocart" type="submit" v-on:click="addToCart({{ book.id }})" title="Add to Cart">Add to Cart</button>
-                                    </div>
-                                    @endif
                                 </div>
                                 <div class="product_meta">
                                     <span class="posted_in">Category:
@@ -109,79 +99,8 @@
                                     </div>
                                 @endeach
                             </div>
-                            <div class="review-fieldset">
-                                <h2>You're commenting:</h2>
-                                <h3>{{ book.book_name }}</h3>
-                                <div class="review_form_field">
-                                    <div class="input__box">
-                                        <span>Comment</span>
-                                        <textarea name="review" v-validate="'required'" v-model="review"></textarea>
-                                        <small class="text-danger" v-cloak>
-                                            @{{ errors.first('review') }}
-                                        </small>
-                                    </div>
-                                    <div class="review-form-actions">
-                                        <button v-on:click="submitComment({{ book.id }})">Submit Comment</button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <!-- End Single Tab Content -->
-                    </div>
-                </div>
-                <div class="wn__related__product pt--80 pb--50">
-                    <div class="section__title text-center">
-                        <h3 class="title__be--2">Related Products</h3>
-                    </div>
-                    <div class="row mt--60">
-                        <!-- Start Single Product -->
-                        @each(product in relatedProducts)
-                            <div class="product product__style--3 col-lg-4 col-md-4 col-sm-6 col-12">
-                                <div class="product__thumb">
-                                        <a class="first__img" href="{{ route('page.single-item',{id:product.id }) }}">
-                                            @if(product.image == null)
-                                                <img src="/shopper/images/books/1.jpg" alt="product image">
-                                            @else
-                                                <div class="img">
-                                                    <img src="/uploads/{{ product.image }}" alt="product img">
-                                                </div>
-                                            @endif
-                                        </a>
-                                        <a class="second__img animation1" href="{{ route('page.single-item',{id:product.id }) }}">
-                                            @if(product.image == null)
-                                                <img src="/shopper/images/books/1.jpg" alt="product image">
-                                            @else
-                                                <div class="img">
-                                                    <img src="/uploads/{{ product.image }}" alt="product img">
-                                                </div>
-                                            @endif
-                                        </a>
-                                    <div class="hot__box">
-                                        <span class="hot-label">BEST SELLER</span>
-                                    </div>
-                                </div>
-                                <div class="product__content content--center">
-                                    <h4><a href="single-product.html">{{ product.book_name }}</a></h4>
-                                    <ul class="prize d-flex">
-                                        <li>Php {{ product.price - (product.price * (product.discount/100)) }}</li>
-                                        <li class="old_prize">Php {{ product.price }}</li>
-                                    </ul>
-                                    <div class="action">
-                                        <div class="actions_inner">
-                                            <ul class="add_to_links">
-                                              @if(!auth.user.is_admin && auth.user.can_buy_and_sell)
-                                                <li><a class="cart" href="/add-to-cart"
-                                                    onclick="event.preventDefault();"
-                                                    v-on:click="addToCart({{ product.id }})"><i class="bi bi-shopping-bag4"></i></a></li>
-                                                    @endif
-                                                <li><a data-toggle="modal" title="Quick View" class="quickview modal-view detail-link" href="#{{ product.id }}"><i class="bi bi-search"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endeach
-                        <!-- Start Single Product -->
                     </div>
                 </div>
             </div>

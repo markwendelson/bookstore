@@ -38,6 +38,7 @@ Route.group(()=> {
     Route.get('/orders', 'UserController.userOrders').as('user.order').middleware('auth')
     Route.get('/orders/:orderCode', 'OrderController.getOrderCode').as('user.orderCode').middleware('auth')
     Route.get('/books', 'UserController.userBooks').as('user.books').middleware('auth')
+    Route.get('/book/:id/comments', 'UserController.userBookComment').as('user.book.comments').middleware('auth')
     Route.post('/checkout', 'UserController.userCheckout').as('user.checkout').middleware('auth')
     Route.get('/cart/items', 'UserController.userGetCheckout').as('user.getCheckout').middleware('auth')
     Route.post('login', 'AuthController.login').middleware('guest')
